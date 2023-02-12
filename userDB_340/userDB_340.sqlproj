@@ -62,5 +62,6 @@
     <Build Include="DataTables\users.sql" />
     <Build Include="DataTables\songList.sql" />
     <Build Include="DataTables\sessionTokens.sql" />
+    <Build Include="DataTables\test.sql" />
   </ItemGroup>
 </Project>

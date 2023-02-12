@@ -14,6 +14,7 @@ namespace FinalProject_340.Models
         public bool RegisterUser()
         {
             SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;");
+            if (this.EMAIL == null || this.FIRST_NAME == null || this.EMAIL == null || this.PASSWORD == null) return false;
             Users newUser = new Users(this.EMAIL, this.FIRST_NAME, this.LAST_NAME, this.PASSWORD);
             this.UUID = newUser.UUID;
             return newConnection.insertIntoTable(newUser);

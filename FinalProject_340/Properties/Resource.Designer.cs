@@ -61,7 +61,7 @@ namespace FinalProject_340.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;.
+        ///   Looks up a localized string similar to Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;.
         /// </summary>
         public static string appData {
             get {

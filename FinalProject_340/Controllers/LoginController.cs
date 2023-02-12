@@ -9,6 +9,11 @@ namespace FinalProject_340.Controllers
         {
             return View();
         }
+        [HttpPost]
+        public IActionResult Login()
+        {
+            return RedirectToAction("Index", "Home");
+        }
         [HttpGet]
         public IActionResult CreateAccount()
         {

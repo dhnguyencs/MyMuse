@@ -34,21 +34,21 @@ namespace FinalProject_340.Models
 
         }
 
-        public string UUID { get; set; }
+        public string? UUID { get; set; }
 
         [Display(Name = "First Name")]
         [Required(ErrorMessage = "First Name Cannot Be Blank!")]
-        public string FIRST_NAME { get; set; }
+        public string? FIRST_NAME { get; set; }
 
         [Display(Name = "Last Name")]
         [Required(ErrorMessage = "Last Name Cannot Be Blank!")]
-        public string LAST_NAME { get; set; }
+        public string? LAST_NAME { get; set; }
 
         [Display(Name = "Email")]
         [Required(ErrorMessage = "Email Required!")]
         public string? EMAIL { get; set; }
 
-        private IDictionary<string, string> _listSet;
+        private Dictionary<string, string> _listSet = new Dictionary<string, string>();
 
         public void helloWorld()
         {
@@ -57,10 +57,10 @@ namespace FinalProject_340.Models
         public Users() { }
         public Users(string UUID)
         {
-            Users newUser = retrieveUser_SQL(UUID);
-            this.UUID = UUID;
+            Users newUser   = retrieveUser_SQL(UUID);
+            this.UUID       = UUID;
             this.FIRST_NAME = newUser.FIRST_NAME;
-            this.LAST_NAME = newUser.LAST_NAME;
+            this.LAST_NAME  = newUser.LAST_NAME;
         }
         public Users(string EMAIL, string PASSWORD)
         {
@@ -68,10 +68,10 @@ namespace FinalProject_340.Models
         }
         public Users(string _EMAIL, string FIRSTNAME, string LASTNAME, string _PASSWORD)
         {
-            FIRST_NAME = FIRSTNAME; 
-            LAST_NAME = LASTNAME;
-            EMAIL = _EMAIL;
-            UUID = (_EMAIL + _PASSWORD).toHash();
+            FIRST_NAME  = FIRSTNAME; 
+            LAST_NAME   = LASTNAME;
+            EMAIL       = _EMAIL;
+            UUID        = (_EMAIL + _PASSWORD).toHash();
         }
         public IDictionary<string, string> getList()
         {
