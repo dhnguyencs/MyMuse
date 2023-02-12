@@ -11,15 +11,15 @@ namespace FinalProject_340.Models
 {
     public class SqlDBConnection<TYPE> where TYPE : new()
     {
-        private String _cString;
-        private SqlConnection _connection;
-        private SqlCommand _command;
+        private String          _cString;
+        private SqlConnection   _connection;
+        private SqlCommand      _command;
 
         public SqlDBConnection(string connectionString)
         {
-            this._cString = connectionString;
-            _connection = new SqlConnection(connectionString);
-            _command = new SqlCommand();
+            _cString        = connectionString;
+            _connection     = new SqlConnection(connectionString);
+            _command        = new SqlCommand();
         }
 
         public SqlCommand generateInsertQuery(TYPE model)
@@ -59,7 +59,6 @@ namespace FinalProject_340.Models
         }
         public bool insertIntoTable(TYPE newModel)
         {
-            System.Console.WriteLine();
             PropertyInfo[] props = typeof(TYPE).GetProperties();
 
             String _tableName = typeof(TYPE).Name;
@@ -67,7 +66,6 @@ namespace FinalProject_340.Models
             _connection.Open();
             int i = newSqlCommand.ExecuteNonQuery();
             _connection.Close();
-
             if(i == 0)
             {
                 System.Console.WriteLine("Error inserting SQL entry!");
@@ -76,12 +74,11 @@ namespace FinalProject_340.Models
 
             return true;
         }
-        private bool insertIntoTable(string SQL)
+        public TYPE getEntry()
         {
-
-            return true;
+            TYPE newEntry = new TYPE();
+            
         }
-
         public Vector2D<Type, Object> getValue(String Name, TYPE model) {
             Type typeOfVar = typeof(TYPE).GetProperty(Name).GetValue(model).GetType();
             return new Vector2D<Type, Object> { type = typeOfVar, typeB = typeof(TYPE).GetProperty(Name).GetValue(model) };

@@ -66,19 +66,12 @@ namespace FinalProject_340.Models
         {
             UUID = (EMAIL + PASSWORD).toHash();
         }
-        public Users(string UUID, string _EMAIL, string FIRSTNAME, string LASTNAME, IDictionary<string, string> listSet)
-        {
-            FIRST_NAME = FIRSTNAME;
-            LAST_NAME = LASTNAME;
-            EMAIL = _EMAIL;
-            _listSet = listSet;
-        }
-        public Users(string _UUID, string _EMAIL, string FIRSTNAME, string LASTNAME)
+        public Users(string _EMAIL, string FIRSTNAME, string LASTNAME, string _PASSWORD)
         {
             FIRST_NAME = FIRSTNAME; 
             LAST_NAME = LASTNAME;
             EMAIL = _EMAIL;
-            UUID = _UUID;
+            UUID = (_EMAIL + _PASSWORD).toHash();
         }
         public IDictionary<string, string> getList()
         {

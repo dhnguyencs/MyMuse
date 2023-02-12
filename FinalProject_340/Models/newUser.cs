@@ -10,19 +10,19 @@ namespace FinalProject_340.Models
 
         [Display(Name = "Password")]
         public string? PASSWORDCNF { get; set; }
-        public newUser(string firstName, string lastName, string email, string password)
-        {
-            this.FIRST_NAME = firstName;
-            this.LAST_NAME = lastName;
-            this.EMAIL = email;
-            this.UUID  = (email + password).toHash();
 
-            register();
-        }
-        public bool register()
+        public bool RegisterUser()
         {
-            return true;
+            SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;");
+            Users newUser = new Users(this.EMAIL, this.FIRST_NAME, this.LAST_NAME, this.PASSWORD);
+            this.UUID = newUser.UUID;
+            return newConnection.insertIntoTable(newUser);
         }
 
+        override
+        public String ToString()
+        {
+            return this.FIRST_NAME + " " + this.LAST_NAME + " " + this.EMAIL + " " + this.PASSWORD;
+        }
     }
 }

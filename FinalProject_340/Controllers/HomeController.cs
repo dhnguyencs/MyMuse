@@ -16,11 +16,9 @@ namespace FinalProject_340.Controllers
 
         public IActionResult Index()
         {
-            //SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;");
-            //Users testUser = new Users("324324", "wardoc22@yahoo.commm", "David", "Nguyen");
-            //newConnection.insertIntoTable(testUser);
             string? cookieValueFromReq = Request.Cookies["sessionID"];
             if (cookieValueFromReq == null) return RedirectToAction("Index", "Login"); 
+
             return View(new Users("123"));
         }
 

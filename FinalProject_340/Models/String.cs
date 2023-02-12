@@ -21,5 +21,9 @@ namespace FinalProject_340.Models
                 return builder.ToString();
             }
         }
+        public static String removeLastChar(this string rawData)
+        {
+            return rawData.Substring(rawData.Length - 2);
+        }
     }
 }
