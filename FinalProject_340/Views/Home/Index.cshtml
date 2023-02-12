@@ -1,0 +1,63 @@
+﻿@model Users;
+
+@{
+    ViewData["Title"] = "Title";
+    ViewData["Name"] = "Name";
+}
+
+@*<div class="text-left">
+    <h1 class="display-4">Welcome</h1>
+    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+    <p>Hello @Model._fName @Model._lName</p>
+</div>*@
+<table class="table">
+    <thead>
+        <tr>
+            <th colspan="1">&#128420;</th>
+            <th colspan="1" class="text-end">&nbsp</th>
+            <th colspan="10">Name</th>
+            <th colspan="1">Time</th>
+            <th colspan="1">Plays</th>
+            <th colspan="2">Artist</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td>&#10084;</td>
+            <td class="text-end">&nbsp;</td>
+            <td colspan="10">No Buses</td>
+            <td colspan="1">3:34</td>
+            <td colspan="1">3</td>
+            <td colspan="2">Artic Monkeys</td>
+        </tr>
+        <tr>
+            <td colspan="1">&#128420;</td>
+            <td colspan="1" class="text-end">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
+                    <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
+                </svg>
+            </td>
+            <td colspan="10">Flourecent Adolescent</td>
+            <td colspan="1">4:34</td>
+            <td colspan="1">1</td>
+            <td colspan="2">Artic Monkeys</td>
+        </tr>
+        <tr>
+            <td>&#128420;</td>
+            <td class="text-end">&nbsp;</td>
+            <td colspan="10">Barely Legal</td>
+            <td colspan="1">3:03</td>
+            <td colspan="1">7</td>
+            <td colspan="2">The Strokes</td>
+        </tr>
+    </tbody>
+</table>
+
+<p>
+    Hello @Model.FIRST_NAME @Model.LAST_NAME
+</p>
+
+<style>
+
+</style>
