@@ -2,11 +2,8 @@
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Identity.Client;
-using System;
-using System.Dynamic;
-using System.Numerics;
+using Microsoft.IdentityModel.Tokens;
 using System.Reflection;
-using System.Xml.Linq;
 
 namespace FinalProject_340.Models
 {
@@ -14,17 +11,16 @@ namespace FinalProject_340.Models
     {
         private String          _cString;
         private SqlConnection   _connection;
-        private SqlCommand      _command;
-        private SqlDataReader   _reader;
+        private SqlDataReader?  _reader;
 
         private String          _tableName  = typeof(TYPE).Name;
         private PropertyInfo[]  _props      = typeof(TYPE).GetProperties();
+        private Type            _typeDef    = typeof(TYPE);
 
-        public SqlDBConnection(string connectionString)
+        public SqlDBConnection  (string connectionString)
         {
             _cString    = connectionString;
-            _connection = new SqlConnection(connectionString);
-            _command    = new SqlCommand();
+            _connection = new SqlConnection(_cString);
         }
         public String generateSqlInsertQuery(TYPE model)
         {
@@ -54,7 +50,7 @@ namespace FinalProject_340.Models
             System.Console.WriteLine(newSqlQuery);
             return newSqlQuery;
         }
-        public SqlCommand createSqlCommand(TYPE model)
+        public SqlCommand createInsertSqlCommand(TYPE model)
         {
             //create a new query based on the model ie -- insert into table () values ()
             String newSqlQuery = generateSqlInsertQuery(model);
@@ -72,9 +68,18 @@ namespace FinalProject_340.Models
 
             return sqlCommand;
         }
+        public int insertList(List<TYPE> list)
+        {
+            int failed = 0;
+            
+            foreach(TYPE item in list)
+                failed = insertIntoTable(item) ? failed : failed++;
+            
+            return failed;
+        }
         public bool insertIntoTable(TYPE newModel)
         {
-            SqlCommand newSqlCommand = createSqlCommand(newModel);
+            SqlCommand newSqlCommand = createInsertSqlCommand(newModel);
             _connection.Open();
             int i = newSqlCommand.ExecuteNonQuery();
             _connection.Close();
@@ -86,86 +91,108 @@ namespace FinalProject_340.Models
 
             return true;
         }
-        public TYPE getFirst(Dictionary<string, string> conditions)
+        public String generateConditionals(String incompleteSqllQuery, Dictionary<string, string> conditions)
         {
-            TYPE newEntry = new TYPE();
-            String newSqlQuery = "Select top(1) * from " + _tableName;
+            conditions = conditions.keysToLower();
             bool f = false;
             if (conditions.Count > 0)
             {
-                newSqlQuery += " where ";
+                incompleteSqllQuery += " where ";
             }
-            foreach(PropertyInfo prop in _props)
+            foreach (PropertyInfo prop in _props)
             {
-                if (conditions.ContainsKey(prop.Name))
+                if (conditions.ContainsKey(prop.Name.ToLower()))
                 {
                     f = true;
-                    newSqlQuery += prop.Name + " = '" + conditions[prop.Name] + "' and ";
+                    incompleteSqllQuery += prop.Name + " = '" + conditions[prop.Name.ToLower()] + "' and ";
                 }
             }
-            if(f) newSqlQuery = newSqlQuery.Substring(0, newSqlQuery.Length - 4);
-            System.Console.WriteLine(newSqlQuery);
-
+            if (f) incompleteSqllQuery = incompleteSqllQuery.Substring(0, incompleteSqllQuery.Length - 4);
+            return incompleteSqllQuery;
+        }
+        public List<TYPE> getList(Dictionary<string, string> conditions, int topX)
+        {
+            string _topX = ""; 
+            if(topX != 0)
+            {
+                _topX += "top (" + topX.ToString() + ")";
+            }
+            List<TYPE> list = new List<TYPE>();
+            String newSqlQuery = "Select " + _topX.ToString() + "* from " + _tableName;
+            newSqlQuery = generateConditionals(newSqlQuery, conditions);
             try
             {
                 _connection.Open();
                 SqlCommand newSqlCommand = new SqlCommand(newSqlQuery, _connection);
                 _reader = newSqlCommand.ExecuteReader();
-                _reader.Read();
-                foreach(PropertyInfo prop in _props)
+                
+                for (int i = 0; _reader.Read() && (i <= topX+1); i++)
                 {
-                    //System.Console.WriteLine(prop.PropertyType);
-                    try
+                    TYPE newEntry = new TYPE();
+                    foreach (PropertyInfo prop in _props)
                     {
-                        setModel(prop, newEntry);
+                        try
+                        {
+                            setModel(prop, newEntry);
+                        }
+                        catch (Exception e)
+                        {
+                            System.Console.WriteLine(e);
+                        }
                     }
-                    catch (Exception e)
-                    {
-                        System.Console.WriteLine(e);
-                    }
+                    list.Add(newEntry);
                 }
                 _connection.Close();
-            }
-            catch (Exception ex)
+            }catch(Exception e)
             {
-                Console.WriteLine(ex.Message);
+                System.Console.WriteLine(e.Message);
             }
-
-            return newEntry;
+            return list;
         }
+        public TYPE? getFirst(Dictionary<string, string> conditions) {
+            List<TYPE> re = getList(conditions, 1);
+            return re.Count > 0 ? re[0] : default(TYPE);
+        }
+        public List<TYPE> getList(Dictionary<string, string> conditions) { return getList(conditions, 10); }
         private void setModel(PropertyInfo prop, TYPE newModel)
         {
-            System.Console.WriteLine(_reader[prop.Name] + " " + newModel.GetType().GetProperty(prop.Name).ToString());
-            var results = _reader[prop.Name];
+            var results = _reader?[prop.Name];
+            if (results == null || results.ToString().IsNullOrEmpty()) return;
             if (prop.PropertyType.ToString().Contains("Int"))
             {
-                newModel.GetType().GetProperty(prop.Name).SetValue(newModel, (int)results, null);
+                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)results, null);
             }
             else if (prop.PropertyType.ToString().Contains("String"))
             {
-                newModel.GetType().GetProperty(prop.Name).SetValue(newModel, results.ToString(), null);
+                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results.ToString(), null);
             }
             else if (prop.PropertyType.ToString().Contains("Single"))
             {
                 float re;
-                float.TryParse(_reader[prop.Name].ToString(), out re);
-                newModel.GetType().GetProperty(prop.Name).SetValue(newModel, re, null);
+                float.TryParse(_reader?[prop.Name].ToString(), out re);
+                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
+            }
+            else if (prop.PropertyType.ToString().Contains("Double"))
+            {
+                double re;
+                double.TryParse(_reader?[prop.Name].ToString(), out re);
+                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
             }
             else if (prop.PropertyType.ToString().Contains("Char"))
             {
-                newModel.GetType().GetProperty(prop.Name).SetValue(newModel, _reader[prop.Name].ToString()[0], null);
+                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, _reader?[prop.Name].ToString()?[0], null);
             }
             else if (prop.PropertyType.ToString().Contains("Date"))
             {
-                newModel.GetType().GetProperty(prop.Name).SetValue(newModel, Convert.ToDateTime(_reader[prop.Name].ToString()), null);
+                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, Convert.ToDateTime(_reader?[prop.Name].ToString()), null);
             }
         }
-        public Vector2D<Type, Object>? getValue(String Name, TYPE model) {
+        private Vector2D<Type, Object>? getValue(String Name, TYPE model) {
             //int ? isNull =  i : (int?)null;
             Object ? results = model?.GetType().GetProperty(Name)?.GetValue(model);
             if (results != null && !string.IsNullOrEmpty(results.ToString()))
             {
-                Type ? typeOfVar = typeof(TYPE).GetProperty(Name)?.GetValue(model)?.GetType();
+                Type ? typeOfVar = _typeDef.GetProperty(Name)?.GetValue(model)?.GetType();
                 return new Vector2D<Type, Object> { type = typeOfVar, typeB = typeof(TYPE)?.GetProperty(Name)?.GetValue(model) };
             }
             return null;

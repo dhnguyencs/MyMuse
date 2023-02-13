@@ -1,34 +1,28 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model Login
 @{
+
 }
 
-<div>
-    <form method="post">
-        <table style="margin-left:30px">
-            <tr>
-                <td>Email: </td>
-                <td><input type="text" name="email" /></td>
-            </tr>
-            <tr>
-                <td>Password: </td>
-                <td><input type="password" name="password" /></td>
-            </tr>
-            <tr>
-                <td>Addon: </td>
-                <td><input type="checkbox" name="chkAddon" /></td>
-            </tr>
-            <tr>
-                <td colspan="1"><input type="submit" value="Submit Form" /></td>
-                <td colspan="1"><input type="button" value="Create Account" onclick="@("window.location.href='" + @Url.Action("CreateAccount", "Login") + "'");" /></td>
-            </tr>
-        </table>
+<div class="container">
+    <form asp-action="Login" method="post">
+        <div class="form-group">
+            <label asp-for="EMAIL" class="control-label"></label>
+            <input asp-for="EMAIL" class="form-control" />
+            <span asp-validation-for="EMAIL" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="PASSWORD" class="control-label"></label>
+            <input asp-for="PASSWORD" type="password" class="form-control" />
+            <span asp-validation-for="PASSWORD" class="text-danger"></span>
+        </div>
+        <div class="form-group" style="margin-top : 10px">
+            <input class="btn btn-primary" type="submit" value="Login" />
+            <input class="btn btn-secondary" type="button" value="Create an Account" onclick="@("window.location.href='" + @Url.Action("CreateAccount", "Login") + "'");" />
+        </div>
     </form>
-</div>
-
-<style>
-    th, td {
-        padding: 5px;
+    @section Scripts{
+        @{
+            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+        }
     }
-</style>
+    </div>

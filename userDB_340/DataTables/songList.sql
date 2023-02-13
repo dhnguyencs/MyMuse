@@ -8,5 +8,5 @@
 
 	title		varchar(512)										,
 	artist		varchar(512)										,
-
+	plays		int													,
 )

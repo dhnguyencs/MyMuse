@@ -7,12 +7,31 @@ namespace FinalProject_340.Controllers
     {
         public IActionResult Index()
         {
+            string cookie = Request.Cookies["sessionID"];
+            Users? user = Users.getUser(cookie);
+            if (user != null && !String.IsNullOrEmpty(user.UUID))
+                return RedirectToAction("Index", "Home");
             return View();
         }
         [HttpPost]
-        public IActionResult Login()
+        public IActionResult Login(Login info)
         {
-            return RedirectToAction("Index", "Home");
+            if (!ModelState.IsValid) return RedirectToAction("Index", "Login");
+
+            SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
+            Users? user = newConnection.getFirst(new Dictionary<string, string>()
+            {
+                {"UUID",  (info.EMAIL + info.PASSWORD).toHash()}
+            });
+            if(user == null) return RedirectToAction("Index", "Login");
+
+            SessionTokens newToken = new SessionTokens(user.UUID);
+            if (newToken.registerToken())
+            {
+                SetCookie("sessionID", newToken.SessionID, 99);
+                return RedirectToAction("Index", "Home");
+            }
+            return RedirectToAction("Index", "Login");
         }
         [HttpGet]
         public IActionResult CreateAccount()
@@ -27,13 +46,11 @@ namespace FinalProject_340.Controllers
             {
                 return View();
             }
-            SessionTokens newToken = new SessionTokens(newUser.UUID);
-            if (newToken.registerToken())
+            return Login(new Login()
             {
-                SetCookie("sessionID", newToken.SessionID, 99);
-                return RedirectToAction("Index", "Home");
-            }
-            return RedirectToAction("Index", "Login");
+                EMAIL = newUser.EMAIL,
+                PASSWORD = newUser.PASSWORD
+            });
         }
         public void SetCookie(string key, string value, int? expireTime)
         {

@@ -1,9 +1,9 @@
 ﻿namespace FinalProject_340.Models
 {
-    public class tEsT
+    public class Test
     {
         public int?      c1 { get; set; }
-        public float?    c2 { get; set; }
+        public double?   c2 { get; set; }
         public char?     c3 { get; set; }
         public string?   c4 { get; set; }
         public DateTime? c5 { get; set; }

@@ -7,32 +7,21 @@ namespace FinalProject_340.Models
 {
     public class Users
     {
-        public static Users retrieveUser_SQL(string UUID)
+        
+        public static Users? getUser(String ? cookie)
         {
-            SqlCommand newSqlCommand = new SqlCommand();
-            //SqlConnection appData = new SqlConnection(FinalProject_340.Properties.Resource.appData);
-            SqlConnection appData = new SqlConnection("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;");
-            SqlDataReader dataReader;
-            Users user = new Users();
-            try
+            if (String.IsNullOrEmpty(cookie)) return null;
+            SqlDBConnection<SessionTokens> newSessionTokenConnection = new SqlDBConnection<SessionTokens>(FinalProject_340.Properties.Resource.appData);
+            SessionTokens? newToken = newSessionTokenConnection.getFirst(new Dictionary<string, string>()
             {
-                appData.Open();
-                newSqlCommand = new SqlCommand($"select top(1) * from users where UUID = {UUID}", appData);
-                dataReader = newSqlCommand.ExecuteReader();
-                dataReader.Read();
-                user.UUID  = (string)dataReader.GetValue(1);
-                user.FIRST_NAME = (string)dataReader.GetValue(2);
-                user.LAST_NAME = (string)dataReader.GetValue(3);
-                appData.Close();
-            }
-            catch(Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-            return user;
-
-
+                {"SessionID", cookie }
+            });
+            if (newToken == null) return null;
+            SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
+            Users? user = newConnection.getFirst(new Dictionary<string, string>() { { "UUID", newToken.accountHash } });
+            return user != null ? user : null;
         }
+
 
         public string? UUID { get; set; }
 
@@ -50,18 +39,7 @@ namespace FinalProject_340.Models
 
         private Dictionary<string, string> _listSet = new Dictionary<string, string>();
 
-        public void helloWorld()
-        {
-            System.Console.WriteLine("Hello World");
-        }
         public Users() { }
-        public Users(string UUID)
-        {
-            Users newUser   = retrieveUser_SQL(UUID);
-            this.UUID       = UUID;
-            this.FIRST_NAME = newUser.FIRST_NAME;
-            this.LAST_NAME  = newUser.LAST_NAME;
-        }
         public Users(string EMAIL, string PASSWORD)
         {
             UUID = (EMAIL + PASSWORD).toHash();
