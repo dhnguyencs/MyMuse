@@ -2,6 +2,17 @@
 {
     public class SessionTokens
     {
+        public static SessionTokens? getToken(string cookie)
+        {
+            if (string.IsNullOrEmpty(cookie)) return (SessionTokens?)null;
+            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>(FinalProject_340.Properties.Resource.appData);
+            SessionTokens? newToken = newConnection.getFirstOrDefault(new Dictionary<string, string>()
+            {
+                {"SessionID", cookie }
+            });
+            return newToken;
+        }
+
         public string? SessionID { get; set; }
         public string? accountHash { get; set; }
         public SessionTokens() { }
@@ -12,7 +23,7 @@
         }
         public bool registerToken()
         {
-            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;");
+            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>(FinalProject_340.Properties.Resource.appData);
             return newConnection.insertIntoTable(this);
         }
     }

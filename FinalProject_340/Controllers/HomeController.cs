@@ -17,6 +17,7 @@ namespace FinalProject_340.Controllers
 
         public IActionResult Index()
         {
+            //allow 
             string? cookieValueFromReq = Request.Cookies["SessionID"];
             Users ? user = Users.getUser(cookieValueFromReq);
             if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");

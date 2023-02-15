@@ -2,6 +2,7 @@
 using FinalProject_340;
 using System.Net;
 using System.ComponentModel.DataAnnotations;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FinalProject_340.Models
 {
@@ -10,18 +11,13 @@ namespace FinalProject_340.Models
         
         public static Users? getUser(String ? cookie)
         {
-            if (String.IsNullOrEmpty(cookie)) return null;
-            SqlDBConnection<SessionTokens> newSessionTokenConnection = new SqlDBConnection<SessionTokens>(FinalProject_340.Properties.Resource.appData);
-            SessionTokens? newToken = newSessionTokenConnection.getFirst(new Dictionary<string, string>()
-            {
-                {"SessionID", cookie }
-            });
-            if (newToken == null) return null;
+            if (String.IsNullOrEmpty(cookie)) return (Users?)null;
+            SessionTokens? newToken = SessionTokens.getToken(cookie);
+            if (newToken == null || newToken.accountHash.IsNullOrEmpty()) return (Users?)null;
             SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
-            Users? user = newConnection.getFirst(new Dictionary<string, string>() { { "UUID", newToken.accountHash } });
-            return user != null ? user : null;
+            Users? user = newConnection.getFirstOrDefault(new Dictionary<string, string>() { { "UUID", newToken.accountHash } });
+            return user != null ? user : (Users?)null;
         }
-
 
         public string? UUID { get; set; }
 
@@ -42,6 +38,9 @@ namespace FinalProject_340.Models
         public Users() { }
         public Users(string EMAIL, string PASSWORD)
         {
+
+            String abc = new String("Hello World");
+
             UUID = (EMAIL + PASSWORD).toHash();
         }
         public Users(string _EMAIL, string FIRSTNAME, string LASTNAME, string _PASSWORD)

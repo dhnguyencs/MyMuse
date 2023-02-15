@@ -7,6 +7,5 @@
 	[device]		varchar(128)						,
 	[created]		datetime							,
 	[lastUsed]		datetime							,
-
-	constraint [referenceToRealUser] foreign key (accountHash) references users(UUID)
+    constraint [referenceToRealUser] foreign key (accountHash) references users(UUID)
 )

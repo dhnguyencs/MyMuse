@@ -7,7 +7,7 @@ using System.Reflection;
 
 namespace FinalProject_340.Models
 {
-    public class SqlDBConnection<TYPE> where TYPE : new()
+    public class SqlDBConnection<TYPE> where TYPE : new() 
     {
         private String          _cString;
         private SqlConnection   _connection;
@@ -17,10 +17,16 @@ namespace FinalProject_340.Models
         private PropertyInfo[]  _props      = typeof(TYPE).GetProperties();
         private Type            _typeDef    = typeof(TYPE);
 
-        public SqlDBConnection  (string connectionString)
+        private Dictionary<string, Func<PropertyInfo, TYPE>> _typeConversonPairs;
+
+        public SqlDBConnection(string connectionString)
         {
             _cString    = connectionString;
             _connection = new SqlConnection(_cString);
+            //_typeConversonPairs = new Dictionary<string, Func<PropertyInfo, TYPE>>()
+            //{
+            //    { typeof(int).ToString(), new Func<PropertyInfo, TYPE>(PropertyInfo a, TYPE b) ->  }
+            //};
         }
         public String generateSqlInsertQuery(TYPE model)
         {
@@ -91,6 +97,10 @@ namespace FinalProject_340.Models
 
             return true;
         }
+        public bool update()
+        {
+            return true;
+        }
         public String generateConditionals(String incompleteSqllQuery, Dictionary<string, string> conditions)
         {
             conditions = conditions.keysToLower();
@@ -149,14 +159,14 @@ namespace FinalProject_340.Models
             }
             return list;
         }
-        public TYPE? getFirst(Dictionary<string, string> conditions) {
+        public TYPE? getFirstOrDefault(Dictionary<string, string> conditions) {
             List<TYPE> re = getList(conditions, 1);
             return re.Count > 0 ? re[0] : default(TYPE);
         }
         public List<TYPE> getList(Dictionary<string, string> conditions) { return getList(conditions, 10); }
         private void setModel(PropertyInfo prop, TYPE newModel)
         {
-            var results = _reader?[prop.Name];
+            Object ? results = _reader?[prop.Name];
             if (results == null || results.ToString().IsNullOrEmpty()) return;
             if (prop.PropertyType.ToString().Contains("Int"))
             {
@@ -188,7 +198,6 @@ namespace FinalProject_340.Models
             }
         }
         private Vector2D<Type, Object>? getValue(String Name, TYPE model) {
-            //int ? isNull =  i : (int?)null;
             Object ? results = model?.GetType().GetProperty(Name)?.GetValue(model);
             if (results != null && !string.IsNullOrEmpty(results.ToString()))
             {

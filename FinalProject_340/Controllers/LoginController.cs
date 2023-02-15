@@ -19,7 +19,7 @@ namespace FinalProject_340.Controllers
             if (!ModelState.IsValid) return RedirectToAction("Index", "Login");
 
             SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
-            Users? user = newConnection.getFirst(new Dictionary<string, string>()
+            Users? user = newConnection.getFirstOrDefault(new Dictionary<string, string>()
             {
                 {"UUID",  (info.EMAIL + info.PASSWORD).toHash()}
             });
