@@ -7,7 +7,7 @@ namespace FinalProject_340.Controllers
     {
         public IActionResult Index()
         {
-            string cookie = Request.Cookies["sessionID"];
+            string ? cookie = Request.Cookies["sessionID"];
             Users? user = Users.getUser(cookie);
             if (user != null && !String.IsNullOrEmpty(user.UUID))
                 return RedirectToAction("Index", "Home");

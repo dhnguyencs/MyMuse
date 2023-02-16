@@ -17,16 +17,43 @@ namespace FinalProject_340.Models
         private PropertyInfo[]  _props      = typeof(TYPE).GetProperties();
         private Type            _typeDef    = typeof(TYPE);
 
-        private Dictionary<string, Func<PropertyInfo, TYPE>> _typeConversonPairs;
+        private delegate void   _setModel(PropertyInfo info, TYPE model);
+
+        private Dictionary<Type, _setModel> _typeConversonPairs;
 
         public SqlDBConnection(string connectionString)
         {
             _cString    = connectionString;
             _connection = new SqlConnection(_cString);
-            //_typeConversonPairs = new Dictionary<string, Func<PropertyInfo, TYPE>>()
-            //{
-            //    { typeof(int).ToString(), new Func<PropertyInfo, TYPE>(PropertyInfo a, TYPE b) ->  }
-            //};
+
+            _typeConversonPairs = new Dictionary<Type, _setModel>()
+            {
+                {typeof(int), delegate(PropertyInfo prop, TYPE newModel){
+                    Object ? results = _reader?[prop.Name];
+                    if(results != null) _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)results, null);
+                } },
+                {typeof(string), delegate(PropertyInfo prop, TYPE newModel){
+                    Object ? results = _reader?[prop.Name];
+                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString(), null);
+                } },
+                {typeof(float), delegate(PropertyInfo prop, TYPE newModel){
+                    float re;
+                    float.TryParse(_reader?[prop.Name].ToString(), out re);
+                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
+                } },
+                {typeof(double), delegate(PropertyInfo prop, TYPE newModel){
+                    double re;
+                    double.TryParse(_reader?[prop.Name].ToString(), out re);
+                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
+                } },
+                {typeof(char), delegate(PropertyInfo prop, TYPE newModel){
+                    Object ? results = _reader?[prop.Name];
+                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString()?[0], null);
+                } },
+                {typeof(DateTime), delegate(PropertyInfo prop, TYPE newModel){
+                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, Convert.ToDateTime(_reader?[prop.Name].ToString()), null);
+                } },
+            };
         }
         public String generateSqlInsertQuery(TYPE model)
         {
@@ -166,36 +193,7 @@ namespace FinalProject_340.Models
         public List<TYPE> getList(Dictionary<string, string> conditions) { return getList(conditions, 10); }
         private void setModel(PropertyInfo prop, TYPE newModel)
         {
-            Object ? results = _reader?[prop.Name];
-            if (results == null || results.ToString().IsNullOrEmpty()) return;
-            if (prop.PropertyType.ToString().Contains("Int"))
-            {
-                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)results, null);
-            }
-            else if (prop.PropertyType.ToString().Contains("String"))
-            {
-                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results.ToString(), null);
-            }
-            else if (prop.PropertyType.ToString().Contains("Single"))
-            {
-                float re;
-                float.TryParse(_reader?[prop.Name].ToString(), out re);
-                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
-            }
-            else if (prop.PropertyType.ToString().Contains("Double"))
-            {
-                double re;
-                double.TryParse(_reader?[prop.Name].ToString(), out re);
-                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
-            }
-            else if (prop.PropertyType.ToString().Contains("Char"))
-            {
-                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, _reader?[prop.Name].ToString()?[0], null);
-            }
-            else if (prop.PropertyType.ToString().Contains("Date"))
-            {
-                _typeDef.GetProperty(prop.Name)?.SetValue(newModel, Convert.ToDateTime(_reader?[prop.Name].ToString()), null);
-            }
+            _typeConversonPairs[prop.PropertyType](prop, newModel);
         }
         private Vector2D<Type, Object>? getValue(String Name, TYPE model) {
             Object ? results = model?.GetType().GetProperty(Name)?.GetValue(model);
