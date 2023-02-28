@@ -3,7 +3,9 @@ using Microsoft.EntityFrameworkCore.Metadata.Conventions;
 using Microsoft.EntityFrameworkCore.Storage;
 using Microsoft.Identity.Client;
 using Microsoft.IdentityModel.Tokens;
+using System.Collections.ObjectModel;
 using System.Reflection;
+using System.Reflection.PortableExecutable;
 
 namespace FinalProject_340.Models
 {
@@ -17,42 +19,64 @@ namespace FinalProject_340.Models
         private PropertyInfo[]  _props      = typeof(TYPE).GetProperties();
         private Type            _typeDef    = typeof(TYPE);
 
-        private delegate void   _setModel(PropertyInfo info, TYPE model);
+        private delegate void   __VOID__PROP_INFO__TYPE__Type       (PropertyInfo info, TYPE model, Type _typeDef);
+        private delegate bool   __BOOL__PROP_INFO__MODEL            (PropertyInfo info, TYPE model);
 
-        private Dictionary<Type, _setModel> _typeConversonPairs;
+        private static Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>? _setModel;
 
         public SqlDBConnection(string connectionString)
         {
             _cString    = connectionString;
             _connection = new SqlConnection(_cString);
 
-            _typeConversonPairs = new Dictionary<Type, _setModel>()
+            _setModel = new Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>()
             {
-                {typeof(int), delegate(PropertyInfo prop, TYPE newModel){
-                    Object ? results = _reader?[prop.Name];
-                    if(results != null) _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)results, null);
-                } },
-                {typeof(string), delegate(PropertyInfo prop, TYPE newModel){
-                    Object ? results = _reader?[prop.Name];
-                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString(), null);
-                } },
-                {typeof(float), delegate(PropertyInfo prop, TYPE newModel){
-                    float re;
-                    float.TryParse(_reader?[prop.Name].ToString(), out re);
-                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
-                } },
-                {typeof(double), delegate(PropertyInfo prop, TYPE newModel){
-                    double re;
-                    double.TryParse(_reader?[prop.Name].ToString(), out re);
-                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
-                } },
-                {typeof(char), delegate(PropertyInfo prop, TYPE newModel){
-                    Object ? results = _reader?[prop.Name];
-                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString()?[0], null);
-                } },
-                {typeof(DateTime), delegate(PropertyInfo prop, TYPE newModel){
-                    _typeDef.GetProperty(prop.Name)?.SetValue(newModel, Convert.ToDateTime(_reader?[prop.Name].ToString()), null);
-                } },
+                {
+                    typeof(int), 
+                    delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
+                    {
+                        Object ? results = _reader?[prop.Name];
+                        if(results != null) _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)results, null);
+                    }
+                },
+                {
+                    typeof(string), 
+                    delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
+                    {
+                        Object ? results = _reader?[prop.Name];
+                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString(), null);
+                    } 
+                },
+                {
+                    typeof(float), 
+                    delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
+                        float re;
+                        float.TryParse(_reader?[prop.Name].ToString(), out re);
+                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
+                    } 
+                },
+                {
+                    typeof(double), 
+                    delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
+                        double re;
+                        double.TryParse(_reader?[prop.Name].ToString(), out re);
+                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
+                    } 
+                },
+                {
+                    typeof(char), 
+                    delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
+                        Object ? results = _reader?[prop.Name];
+                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString()?[0], null);
+                    } 
+                },
+                {   
+                    typeof(DateTime), 
+                    delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
+                    {
+                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, Convert.ToDateTime(_reader?[prop.Name].ToString()), null);
+                    } 
+                },
             };
         }
         public String generateSqlInsertQuery(TYPE model)
@@ -113,24 +137,110 @@ namespace FinalProject_340.Models
         public bool insertIntoTable(TYPE newModel)
         {
             SqlCommand newSqlCommand = createInsertSqlCommand(newModel);
-            _connection.Open();
-            int i = newSqlCommand.ExecuteNonQuery();
-            _connection.Close();
-            if(i == 0)
+            try
             {
-                System.Console.WriteLine("Error inserting SQL entry!");
-                return false;
+                _connection.Open();
+                int i = newSqlCommand.ExecuteNonQuery();
+                _connection.Close();
+                if (i == 0)
+                {
+                    System.Console.WriteLine("Error inserting SQL entry!");
+                    return false;
+                }
+            }
+            catch(Exception e)
+            {
+                System.Console.WriteLine(e);
             }
 
             return true;
         }
-        public bool update()
+        public String createRawSqlUpdate(TYPE model, Dictionary<string, string> conditions)
         {
+            String sqlRaw = "update " + _tableName + " set ";
+            foreach (PropertyInfo prop in _props)
+            {
+                var results = getValue(prop.Name, model);
+                if (results != null)
+                {
+                    sqlRaw += prop.Name + " = " + "@" + prop.Name + ", ";
+                }
+            }
+            sqlRaw = sqlRaw.Substring(0, sqlRaw.Length - 2) + " ";
+            sqlRaw += "where ";
+            foreach (PropertyInfo prop in _props)
+            {
+                if (conditions.ContainsKey(prop.Name.ToLower()))
+                {
+                    sqlRaw += prop.Name + " = " + "@" + prop.Name + "c " + " and ";
+                }
+            }
+            sqlRaw = sqlRaw.Substring(0, sqlRaw.Length - 4) + " ";
+            return sqlRaw;
+        }
+        public String createRawSqlDelete(Dictionary<string, string> conditions)
+        {
+            String sqlRaw = "delete from " + _tableName + " where ";
+            foreach (PropertyInfo prop in _props)
+            {
+                if (conditions.ContainsKey(prop.Name.ToLower()))
+                {
+                    sqlRaw += prop.Name + " = " + "@" + prop.Name + "c " + " and ";
+                }
+            }
+            sqlRaw = sqlRaw.Substring(0, sqlRaw.Length - 4) + " ";
+            return sqlRaw;
+        }
+        public bool delete(Dictionary<string, string> conditions)
+        {
+            if (conditions.Count == 0) return false;
+
+            conditions = conditions.toLowerCaseKey();
+            String sqlRaw = createRawSqlDelete(conditions);
+            SqlCommand newCommand = new SqlCommand(sqlRaw, _connection);
+            foreach (PropertyInfo prop in _props)
+            {
+                if (conditions.ContainsKey(prop.Name.ToLower()))
+                    newCommand.Parameters.AddWithValue("@" + prop.Name + "c", conditions[prop.Name.ToLower()]);
+
+            }
+
+            _connection.Open();
+            int re = newCommand.ExecuteNonQuery();
+            _connection.Close();
+            if (re == 0) return false;
+            return true;
+        }
+        public bool update(TYPE model, Dictionary<string, string> conditions)
+        {
+            if (conditions.Count == 0) return false;
+
+            conditions = conditions.toLowerCaseKey();
+            String sqlRaw = createRawSqlUpdate(model, conditions);
+            SqlCommand newCommand = new SqlCommand(sqlRaw, _connection);
+            foreach(PropertyInfo prop in _props)
+            {
+                var results = getValue(prop.Name, model);
+                if (results != null)
+                {
+                    newCommand.Parameters.AddWithValue("@" + prop.Name, results.typeB);
+                    if (conditions.ContainsKey(prop.Name.ToLower()))
+                    {
+                        newCommand.Parameters.AddWithValue("@" + prop.Name + "c", conditions[prop.Name.ToLower()]);
+                    }
+                }
+
+            }
+
+            _connection.Open();
+            int re = newCommand.ExecuteNonQuery();
+            _connection.Close();
+            if (re == 0) return false;
             return true;
         }
         public String generateConditionals(String incompleteSqllQuery, Dictionary<string, string> conditions)
         {
-            conditions = conditions.keysToLower();
+            conditions = conditions.toLowerCaseKey();
             bool f = false;
             if (conditions.Count > 0)
             {
@@ -170,7 +280,7 @@ namespace FinalProject_340.Models
                     {
                         try
                         {
-                            setModel(prop, newEntry);
+                            setModel(prop, newEntry, _reader);
                         }
                         catch (Exception e)
                         {
@@ -191,9 +301,9 @@ namespace FinalProject_340.Models
             return re.Count > 0 ? re[0] : default(TYPE);
         }
         public List<TYPE> getList(Dictionary<string, string> conditions) { return getList(conditions, 10); }
-        private void setModel(PropertyInfo prop, TYPE newModel)
+        private void setModel(PropertyInfo prop, TYPE newModel, SqlDataReader _reader)
         {
-            _typeConversonPairs[prop.PropertyType](prop, newModel);
+            _setModel[prop.PropertyType](prop, newModel, _typeDef);
         }
         private Vector2D<Type, Object>? getValue(String Name, TYPE model) {
             Object ? results = model?.GetType().GetProperty(Name)?.GetValue(model);

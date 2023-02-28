@@ -60,8 +60,9 @@
   </ItemGroup>
   <ItemGroup>
     <Build Include="DataTables\users.sql" />
-    <Build Include="DataTables\songList.sql" />
+    <Build Include="DataTables\song.sql" />
     <Build Include="DataTables\sessionTokens.sql" />
     <Build Include="DataTables\test.sql" />
+    <Build Include="DataTables\playLists.sql" />
   </ItemGroup>
 </Project>

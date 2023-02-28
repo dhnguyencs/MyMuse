@@ -2,7 +2,7 @@
 {
     public static class DictionariesExt
     {
-        public static Dictionary<string, string> keysToLower(this Dictionary<String, String> thisDict)
+        public static Dictionary<string, string> toLowerCaseKey(this Dictionary<String, String> thisDict)
         {
             Dictionary<String, String> lo_case_conditions = new Dictionary<string, string>();
             

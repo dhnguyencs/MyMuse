@@ -8,14 +8,19 @@ namespace FinalProject_340.Models
 {
     public class Users
     {
-        
         public static Users? getUser(String ? cookie)
         {
+            //if cookie is null, return a null user
             if (String.IsNullOrEmpty(cookie)) return (Users?)null;
+            //retrieve session token from cookie
             SessionTokens? newToken = SessionTokens.getToken(cookie);
+            //if the token is null or the account UUID associated with token is null, return a null user
             if (newToken == null || newToken.accountHash.IsNullOrEmpty()) return (Users?)null;
+            //create a new sql db connection targeting the user table
             SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
+            //retrieve the user using the account UUID in the token
             Users? user = newConnection.getFirstOrDefault(new Dictionary<string, string>() { { "UUID", newToken.accountHash } });
+            //return either the user or null user
             return user != null ? user : (Users?)null;
         }
 
@@ -38,9 +43,6 @@ namespace FinalProject_340.Models
         public Users() { }
         public Users(string EMAIL, string PASSWORD)
         {
-
-            String abc = new String("Hello World");
-
             UUID = (EMAIL + PASSWORD).toHash();
         }
         public Users(string _EMAIL, string FIRSTNAME, string LASTNAME, string _PASSWORD)
@@ -53,6 +55,22 @@ namespace FinalProject_340.Models
         public IDictionary<string, string> getList()
         {
             return _listSet;
+        }
+        public bool AddSong(Song song)
+        {
+            SqlDBConnection<Song> sqlDBConnection = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
+            if (sqlDBConnection.insertIntoTable(song)) return true;
+            return false;
+        }
+        List<Song> getAllSongs()
+        {
+            SqlDBConnection<Song> sqlDBConnection = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
+            List<Song> songs = sqlDBConnection.getList(new Dictionary<string, string>() {
+                {
+                    "USR_UUID", this.UUID
+                }
+            }, 9999);
+            return songs;
         }
     }
 }

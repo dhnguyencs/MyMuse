@@ -1,4 +1,4 @@
-﻿CREATE TABLE [dbo].[songList]
+﻿CREATE TABLE [dbo].[playLists]
 (
 	[Id]		INT				NOT NULL	PRIMARY KEY IDENTITY	,
 
@@ -6,7 +6,5 @@
 	p_l_hash	varchar(512)	NOT NULL							, -- references a hash, using this hash as the ID of of the playlist this entry belongs to
 	songHash	varchar(512)	NOT NULL							, -- hash points to the song on a user play list.
 
-	title		varchar(512)										,
-	artist		varchar(512)										,
-	plays		int													,
+	title		varchar(512)										, --playList title
 )
