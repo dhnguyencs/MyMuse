@@ -21,15 +21,16 @@ namespace FinalProject_340.Controllers
             string? cookieValueFromReq = Request.Cookies["SessionID"];
             //get user with cookie
             Users ? user = Users.getUser(cookieValueFromReq);
-            Song newSong = new Song()
-            {
-                title = "k545",
-                plays = 0,
-                artist = "Mozart",
-                songHash = "10000000",
-                USR_UUID = user.UUID,
-            };
-            user.AddSong(newSong);
+            //Song newSong = new Song()
+            //{
+            //    title = "k545",
+            //    plays = 0,
+            //    artist = "Mozart",
+            //    songHash = "10000000",
+            //    USR_UUID = user.UUID,
+            //};
+            //user.AddSong(newSong);
+
             //if either cookie or user is null, redirect to the login page instead
             if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
             //return the main page, passing in the model of the user

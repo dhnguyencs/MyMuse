@@ -5,8 +5,10 @@ namespace FinalProject_340.Controllers
 {
     public class LoginController : Controller
     {
-        public IActionResult Index()
+        public IActionResult Index(int method)
         {
+            if (method != 0)
+                return View("~/Views/Login/_Index.cshtml");
             //get cookie
             string ? cookie = Request.Cookies["sessionID"];
             //authenticate user with cookie
