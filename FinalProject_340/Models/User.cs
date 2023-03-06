@@ -62,7 +62,7 @@ namespace FinalProject_340.Models
             if (sqlDBConnection.insertIntoTable(song)) return true;
             return false;
         }
-        List<Song> getAllSongs()
+        public List<Song> getAllSongs()
         {
             SqlDBConnection<Song> sqlDBConnection = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
             List<Song> songs = sqlDBConnection.getList(new Dictionary<string, string>() {

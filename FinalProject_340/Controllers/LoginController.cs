@@ -20,7 +20,7 @@ namespace FinalProject_340.Controllers
         public IActionResult Login(Login info)
         {
             //if login info state is invalid, return to the login page
-            if (!ModelState.IsValid) return RedirectToAction("Index", "Login");
+            if (!ModelState.IsValid || String.IsNullOrEmpty(info.EMAIL) || String.IsNullOrEmpty(info.PASSWORD)) return RedirectToAction("Index", "Login");
 
             //create a new sq connection to the users table
             SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
@@ -53,7 +53,7 @@ namespace FinalProject_340.Controllers
         [HttpPost]
         public IActionResult CreateAccount(newUser newUser)
         {
-            //if the passwords dont match or unable to register user into the database, return to create account page
+            //if the passwords dont match or unable to register user into the database, return to the account creation page
             if(newUser.PASSWORD != newUser.PASSWORDCNF || !newUser.RegisterUser())
             {
                 return View();

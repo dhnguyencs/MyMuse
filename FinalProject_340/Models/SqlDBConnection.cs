@@ -20,7 +20,7 @@ namespace FinalProject_340.Models
         private Type            _typeDef    = typeof(TYPE);
 
         private delegate void   __VOID__PROP_INFO__TYPE__Type       (PropertyInfo info, TYPE model, Type _typeDef);
-        private delegate bool   __BOOL__PROP_INFO__MODEL            (PropertyInfo info, TYPE model);
+        private delegate bool   __BOOL__PROP_INFO__TYPE             (PropertyInfo info, TYPE model);
 
         private static Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>? _setModel;
 
@@ -35,15 +35,17 @@ namespace FinalProject_340.Models
                     typeof(int), 
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
                     {
-                        Object ? results = _reader?[prop.Name];
-                        if(results != null) _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)results, null);
+                        int re;
+                        int.TryParse(_reader?[prop.Name].ToString(), out re);
+                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)re, null);
                     }
                 },
                 {
                     typeof(string), 
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
                     {
-                        Object ? results = _reader?[prop.Name];
+                        string ? results = (string)_reader?[prop.Name];
+                        if(String.IsNullOrEmpty(results)) return;
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString(), null);
                     } 
                 },
@@ -66,7 +68,8 @@ namespace FinalProject_340.Models
                 {
                     typeof(char), 
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
-                        Object ? results = _reader?[prop.Name];
+                        string ? results = (string)_reader?[prop.Name];
+                        if(String.IsNullOrEmpty(results)) return;
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString()?[0], null);
                     } 
                 },
@@ -142,15 +145,11 @@ namespace FinalProject_340.Models
                 _connection.Open();
                 int i = newSqlCommand.ExecuteNonQuery();
                 _connection.Close();
-                if (i == 0)
-                {
-                    System.Console.WriteLine("Error inserting SQL entry!");
-                    return false;
-                }
             }
             catch(Exception e)
             {
                 System.Console.WriteLine(e);
+                return false;
             }
 
             return true;
