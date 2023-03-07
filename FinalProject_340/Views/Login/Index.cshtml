@@ -2,27 +2,30 @@
 @{
 
 }
+<link rel="stylesheet" href="/css/userLogin.css">
 
-<div class="container">
-    <form asp-action="Login" method="post">
-        <div class="form-group">
-            <label asp-for="EMAIL" class="control-label"></label>
-            <input asp-for="EMAIL" class="form-control" />
-            <span asp-validation-for="EMAIL" class="text-danger"></span>
-        </div>
-        <div class="form-group">
-            <label asp-for="PASSWORD" class="control-label"></label>
-            <input asp-for="PASSWORD" type="password" class="form-control" />
-            <span asp-validation-for="PASSWORD" class="text-danger"></span>
-        </div>
-        <div class="form-group" style="margin-top : 10px">
-            <input class="btn btn-primary" type="submit" value="Login" />
-            <input class="btn btn-secondary" type="button" value="Create an Account" onclick="@("window.location.href='" + @Url.Action("CreateAccount", "Login") + "'");" />
-        </div>
-    </form>
-    @section Scripts{
-        @{
-            await Html.RenderPartialAsync("_ValidationScriptsPartial");
+<body>
+    <div class="container">
+        <form asp-action="Login" method="post">
+            <div class="form-group">
+                <label asp-for="EMAIL" class="control-label"></label>
+                <input asp-for="EMAIL" class="form-control" />
+                <span asp-validation-for="EMAIL" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PASSWORD" class="control-label"></label>
+                <input asp-for="PASSWORD" type="password" class="form-control" />
+                <span asp-validation-for="PASSWORD" class="text-danger"></span>
+            </div>
+            <div class="form-group" style="margin-top : 10px">
+                <input class="btn btn-primary" type="submit" value="Login" />
+                <input class="btn btn-secondary" type="button" value="Create an Account" onclick="@("window.location.href='" + @Url.Action("CreateAccount", "Login") + "'");" />
+            </div>
+        </form>
+        @section Scripts{
+            @{
+                await Html.RenderPartialAsync("_ValidationScriptsPartial");
+            }
         }
-    }
-    </div>
+        </div>
+</body>
