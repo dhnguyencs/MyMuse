@@ -61,7 +61,7 @@ namespace FinalProject_340.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source=(localdb)\ProjectModels;Initial Catalog=userDB_340;Integrated Security=True;Connect Timeout=100;.
+        ///   Looks up a localized string similar to Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;.
         /// </summary>
         public static string appData {
             get {
@@ -70,11 +70,11 @@ namespace FinalProject_340.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;.
+        ///   Looks up a localized string similar to Data Source=(localdb)\ProjectModels;Initial Catalog=userDB_340;Integrated Security=True;Connect Timeout=100;.
         /// </summary>
-        public static string appData_1 {
+        public static string appData_ {
             get {
-                return ResourceManager.GetString("appData_1", resourceCulture);
+                return ResourceManager.GetString("appData_", resourceCulture);
             }
         }
     }
