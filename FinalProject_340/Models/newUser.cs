@@ -13,10 +13,19 @@ namespace FinalProject_340.Models
 
         public bool RegisterUser()
         {
+            //basic checks
+            if (
+                this.EMAIL          == null || this.FIRST_NAME == null || 
+                this.EMAIL          == null || this.PASSWORD   == null ||
+                this.PASSWORDCNF    == null || this.PASSWORD   != this.PASSWORDCNF
+                ) return false;
+            
+            /*create a SqlDBConnection object modeling the Users table in the database, 
+              using the connection string found in the resource file*/
             SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
-            if (this.EMAIL == null || this.FIRST_NAME == null || this.EMAIL == null || this.PASSWORD == null) return false;
+            //Create a new user with the required data
             Users newUser = new Users(this.EMAIL, this.FIRST_NAME, this.LAST_NAME, this.PASSWORD);
-            this.UUID = newUser.UUID;
+            //return the results of function insertIntoTable from the Sql object
             return newConnection.insertIntoTable(newUser);
         }
 

@@ -10,7 +10,7 @@
         public int?      c6 { get; set; }
         public float?    c7 { get; set; }
         public char?     c8 { get; set; }
-        public string?  c9 { get; set; }
+        public string?   c9 { get; set; }
         public DateTime? c10 { get; set; }
     }
 }
