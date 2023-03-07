@@ -9,8 +9,9 @@ namespace FinalProject_340.Models
         public String  artist       { get; set; }
         public String  songHash     { get; set; }
         public String  USR_UUID     { get; set; }
-        public int    fav          { get; set; }
-        public int    songLength   { get; set; }
+        public String  type         { get; set; }
+        public int     fav          { get; set; }
+        public int     songLength   { get; set; }
 
         public String formatTime()
         {
@@ -18,17 +19,11 @@ namespace FinalProject_340.Models
             int seconds = songLength % 60;
             StringBuilder str_sec = new StringBuilder();
             if (seconds == 0)
-            {
                 str_sec.Append("00");
-            }
             else if(seconds < 10)
-            {
                 str_sec.Append("0" + seconds);
-            }
             else
-            {
                 str_sec.Append(seconds);
-            }
             return new String(minutes + ":" + str_sec.ToString());
         }
         public bool favourited()

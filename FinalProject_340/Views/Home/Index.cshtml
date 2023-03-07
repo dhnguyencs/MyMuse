@@ -19,20 +19,15 @@
             <th colspan="1">Time</th>
             <th colspan="1">Plays</th>
             <th colspan="2">Artist</th>
+            <th colspan="1"></th>
         </tr>
     </thead>
-   @* double cheveron icon*@
-   @* <td colspan="1" class="text-end">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chevron-double-right" viewBox="0 0 16 16">
-            <path fill-rule="evenodd" d="M3.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L9.293 8 3.646 2.354a.5.5 0 0 1 0-.708z" />
-            <path fill-rule="evenodd" d="M7.646 1.646a.5.5 0 0 1 .708 0l6 6a.5.5 0 0 1 0 .708l-6 6a.5.5 0 0 1-.708-.708L13.293 8 7.646 2.354a.5.5 0 0 1 0-.708z" />
-        </svg>
-    </td>*@
     <tbody>
         @foreach (Song song in Model.getAllSongs()){
-            <tr>
+            <tr id="@song.songHash" class="hover" onclick='playSong("@song.songHash@song.type")'>
                 @if (!song.favourited()){
-                    <td class="text-end">&nbsp;</td>
+@*                    <td class="text-end">&nbsp;</td>*@
+                    <th colspan="1">&#128420;</th>
                 }
                 else{
                     <td>&#10084;</td>
@@ -42,15 +37,139 @@
                 <td colspan="1">@song.formatTime()</td>
                 <td colspan="1">@song.plays</td>
                 <td colspan="2">@song.artist</td>
+                <th colspan="1"></th>
             </tr>
         }
+        <tr>
+            <td class="">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-arrow-up" viewBox="0 0 16 16">
+                    <path d="M8 11a.5.5 0 0 0 .5-.5V6.707l1.146 1.147a.5.5 0 0 0 .708-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 .5.5z" />
+                    <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+                </svg>
+            </td>
+            <td class="text-end">&nbsp;</td>
+            <td colspan="10"><input id="newTitle" type="text" placeholder="Title" /></td>
+            <td colspan="1">
+                <input type="file" accept=".mp3,.m4a,.wav,.ogg" id="input" single />
+            </td>
+            <td colspan="1"></td>
+            <td colspan="2"><input id="newArtist" type="text" placeholder="Artist"/></td>
+            <td colspan="1"><a href="#" onclick="uploadSong()">Upload</a></td>
+        </tr>
     </tbody>
 </table>
-
-<p>
-    Hello @Model.UUID @Model.FIRST_NAME @Model.LAST_NAME
-</p>
+@*<div id="_con">
+    <div class="popup"
+        <p>Hello world</p>
+    </div>
+</div>*@
 
 <style>
+    .hover:hover {
+        cursor: pointer;
+        background: rgb(200, 200, 200, 1);
+    }
+    .popup {
+        z-index: 9999;
+        position: fixed;
+        top: 0px;
+        left: 10px;
+        background: white;
+        padding: 20px;
+        -webkit-box-shadow: 0px 2px 10px 5px rgba(0,0,0,0.27);
+        box-shadow: 0px 2px 10px 5px rgba(0,0,0,0.27);
+        border-radius: 5px;
+    }
 
 </style>
+
+<script>
+    let currentTrack    = document.createElement("audio");
+    let filename        = null;
+
+    function playSong(songHash){
+        songHash = songHash.toString();
+        console.log(songHash);
+        currentTrack.src = "/resources/@Model.UUID/songs/" + songHash;
+        currentTrack.play();
+    }
+    function uploadSong() {
+        event.preventDefault();
+        let file_con = document.getElementById("input");
+        file = file_con.files[0];
+        let formData = new FormData();
+        formData.append("formFile", file);
+        formData.append("title", document.getElementById("newTitle").value);
+        formData.append("artist", document.getElementById("newArtist").value);
+
+        let xhReq = new XMLHttpRequest();
+        xhReq.onreadystatechange = function(){
+            if (xhReq.readyState == 4 && xhReq.status == 200) {
+                window.location.href = "/";
+            }
+        }
+        xhReq.open("POST", "/api/uploadSong", true);
+        xhReq.send(formData);
+    }
+</script>
+
+@*<script>
+    function dragElement(element) {
+        var x1 = 0, y1 = 0, x2 = 0, y2 = 0;
+        element.onmousedown = dragMouseDown;
+        element.ontouchstart = touchStart;
+
+        function dragMouseDown(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // get the mouse cursor position at startup:
+            x2 = e.clientX;
+            y2 = e.clientY;
+            document.onmouseup = closeDragElement;
+            // call a function whenever the cursor moves:
+            document.onmousemove = elementDrag;
+        }
+
+        function touchStart(e) {
+            e = e || window.event;
+            x1 = e.targetTouches[0].clientX;
+            y1 = e.targetTouches[0].clientY;
+            document.ontouchend = closeTouchAndDragElement;
+            document.ontouchmove = dragElement;
+        }
+
+        function elementDrag(e) {
+            e = e || window.event;
+            e.preventDefault();
+            // calculate the new cursor position:
+            x1 = x2 - e.clientX;
+            y1 = y2 - e.clientY;
+            x2 = e.clientX;
+            y2 = e.clientY;
+            // set the element's new position:
+            element.style.top = (element.offsetTop - y1) + "px";
+            element.style.left = (element.offsetLeft - x1) + "px";
+        }
+
+        function dragElement(e) {
+            e = e || window.event;
+            x2 = x1 - e.targetTouches[0].clientX;
+            y2 = y1 - e.targetTouches[0].clientY;
+            x1 = e.targetTouches[0].clientX;
+            y1 = e.targetTouches[0].clientY;
+            element.style.top = (element.offsetTop - y2) + "px";
+            element.style.left = (element.offsetLeft - x2) + "px";
+        }
+
+        function closeDragElement() {
+            // stop moving when mouse button is released:
+            document.onmouseup = null;
+            document.onmousemove = null;
+        }
+        function closeTouchAndDragElement() {
+            document.ontouchend = null;
+            document.ontouchmove = null;
+        }
+    }
+    dragElement(document.getElementsByClassName("popup")[0]);
+</script>*@
