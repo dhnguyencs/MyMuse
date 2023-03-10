@@ -7,6 +7,8 @@ namespace FinalProject_340.Models
         public int     plays        { get; set; }
         public String  title        { get; set; }
         public String  artist       { get; set; }
+        public String  album        { get; set; }
+        public String  albumArt     { get; set; }
         public String  songHash     { get; set; }
         public String  USR_UUID     { get; set; }
         public String  type         { get; set; }
@@ -28,8 +30,7 @@ namespace FinalProject_340.Models
         }
         public bool favourited()
         {
-            if (fav == 0) return false;
-            return true;
+            return fav == 0 ? false : true;
         }
 
     }

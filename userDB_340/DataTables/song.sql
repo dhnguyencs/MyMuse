@@ -7,9 +7,11 @@
 
 	title		varchar(512)												,
 	artist		varchar(512)												,
+	album		varchar(512)												,
+	albumArt	varchar(512)												,
 	plays		int															,
 	songLength	int						NOT NULL							,
 	fav			int						NOT NULL							, -- 0 = not fav, 1 = fav
-	_type		varchar(10)				NOT NULL							, -- mp3, wav, ogg, m4a
+	type		varchar(10)				NOT NULL							, -- mp3, wav, ogg, m4a
 
 )

@@ -144,14 +144,14 @@ namespace FinalProject_340.Models
             {
                 _connection.Open();
                 int i = newSqlCommand.ExecuteNonQuery();
-                _connection.Close();
             }
             catch(Exception e)
             {
+                _connection.Close();
                 System.Console.WriteLine(e);
                 return false;
             }
-
+            _connection.Close();
             return true;
         }
         public String createRawSqlUpdate(TYPE model, Dictionary<string, string> conditions)

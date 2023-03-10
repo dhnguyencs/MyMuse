@@ -59,8 +59,7 @@ namespace FinalProject_340.Models
         public bool AddSong(Song song)
         {
             SqlDBConnection<Song> sqlDBConnection = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
-            if (sqlDBConnection.insertIntoTable(song)) return true;
-            return false;
+            return sqlDBConnection.insertIntoTable(song);
         }
         public List<Song> getAllSongs()
         {

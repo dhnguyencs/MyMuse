@@ -6,14 +6,10 @@ namespace FinalProject_340.Controllers
 {
     public class apiController : Controller
     {
-        public IActionResult Index()
-        {
-            return Json("hello world!");
-        }
         [HttpPost]
         public IActionResult uploadSong([FromForm] __NewSong song)
         {
-            if (!ModelState.IsValid) return Json(false);
+            //if (!ModelState.IsValid) return Json(false);
 
             using (var stream = song.formFile.OpenReadStream())
             {
@@ -23,38 +19,42 @@ namespace FinalProject_340.Controllers
                 Users? user = Users.getUser(cookieValueFromReq);
                 //if either cookie or user is null, redirect to the login page instead
                 if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
-
                 var tagFile = TagLib.File.Create(new GenericAudioStream(song.formFile.FileName, stream));
-
-                if (!tagFile.MimeType.ToLower().Contains("mp3") && !tagFile.MimeType.ToLower().Contains("ogg") &&
-                    !tagFile.MimeType.ToLower().Contains("m4a") && !tagFile.MimeType.ToLower().Contains("m4a"))
-                    return Json(false);
+                string MiemeType = tagFile.MimeType.ToLower();
+                if (
+                        !MiemeType.Contains("mp3") && 
+                        !MiemeType.Contains("ogg") &&
+                        !MiemeType.Contains("m4a") && 
+                        !MiemeType.Contains("wav")
+                    ) return Json(false);
 
                 string FTYPE = "";
-                if (tagFile.MimeType.ToLower().Contains("mp3")) FTYPE = ".mp3";
-                if (tagFile.MimeType.ToLower().Contains("ogg")) FTYPE = ".ogg";
-                if (tagFile.MimeType.ToLower().Contains("m4a")) FTYPE = ".m4a";
-                if (tagFile.MimeType.ToLower().Contains("m4a")) FTYPE = ".m4a";
+                if (MiemeType.Contains("mp3")) FTYPE = ".mp3";
+                if (MiemeType.Contains("ogg")) FTYPE = ".ogg";
+                if (MiemeType.Contains("m4a")) FTYPE = ".m4a";
+                if (MiemeType.Contains("wav")) FTYPE = ".wav";
 
                 string newHash = (song.formFile.GetHashCode().ToString() + user.UUID).toHash();
 
                 SaveFileAsync(song.formFile, "wwwroot/resources/" + user.UUID + "/songs", newHash + FTYPE);
 
-                Song newSong = new Song()
-                {
-                    USR_UUID = user.UUID,
-                    title = song.title,
-                    artist = song.artist,
-                    plays = 0,
-                    songHash = newHash,
-                    songLength = (int)tagFile.Properties.Duration.TotalSeconds,
-                    fav = 0,
-                    type = FTYPE
-                };
-                return Json(user.AddSong(newSong));
+                return Json(user.AddSong(
+                    new Song()
+                        {
+                            USR_UUID    = user.UUID                                             ,
+                            title       = song.title                                            ,
+                            artist      = song.artist                                           ,
+                            album       = song.album                                            ,
+                            songHash    = newHash                                               ,
+                            songLength  = (int)tagFile.Properties.Duration.TotalSeconds         ,
+                            plays       = 0                                                     ,
+                            fav         = 0                                                     ,
+                            type        = FTYPE
+                        }
+                ));
             }
         }
-        public async Task<string> SaveFileAsync(IFormFile file, string folderPath, string fileName)
+        public async Task<int> SaveFileAsync(IFormFile file, string folderPath, string fileName)
         {
             // If directory does not exist, create it
             if (!Directory.Exists(folderPath))
@@ -72,7 +72,7 @@ namespace FinalProject_340.Controllers
             }
 
             // Return the file name
-            return fileName;
+            return 0;
         }
     }
 }
