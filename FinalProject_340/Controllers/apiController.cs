@@ -59,10 +59,9 @@ namespace FinalProject_340.Controllers
         }
         public void saveImages(IFormFile file, string UUID, string HASH)
         {
-            if (!Directory.Exists("wwwroot/resources/" + UUID + "/art/"))
-            {
+            if (!Directory.Exists("wwwroot/resources/" + UUID + "/art/")) 
                 Directory.CreateDirectory("wwwroot/resources/" + UUID + "/art/");
-            }
+
             resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "30x30.jpg", 30, 30);
             resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "100x100.jpg", 100, 100);
             resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "500x500.jpg", 500, 500);
