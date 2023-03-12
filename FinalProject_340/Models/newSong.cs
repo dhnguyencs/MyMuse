@@ -2,7 +2,7 @@
 
 namespace FinalProject_340.Models
 {
-    public class __NewSong
+    public class _n_song
     {
         [FromForm(Name = "formFile")]
         public IFormFile formFile   { get; set; }
@@ -11,13 +11,13 @@ namespace FinalProject_340.Models
         public IFormFile albumArt   { get; set; }
 
         [FromForm(Name = "title")]
-        public string title         { get; set; }
+        public String title         { get; set; }
 
         [FromForm(Name = "album")]
-        public string album         { get; set; }
+        public String album         { get; set; }
 
         [FromForm(Name = "artist")]
-        public string artist        { get; set; }
+        public String artist        { get; set; }
 
     }
 }

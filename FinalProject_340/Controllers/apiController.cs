@@ -1,13 +1,14 @@
 ﻿using FinalProject_340.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.IO;
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace FinalProject_340.Controllers
 {
     public class apiController : Controller
     {
         [HttpPost]
-        public IActionResult uploadSong([FromForm] __NewSong song)
+        public IActionResult uploadTrack([FromForm] _n_song song)
         {
             //if (!ModelState.IsValid) return Json(false);
 
@@ -38,6 +39,8 @@ namespace FinalProject_340.Controllers
 
                 SaveFileAsync(song.formFile, "wwwroot/resources/" + user.UUID + "/songs", newHash + FTYPE);
 
+                if(song.albumArt != null) saveImages(song.albumArt, user.UUID, newHash);
+
                 return Json(user.AddSong(
                     new Song()
                         {
@@ -52,6 +55,28 @@ namespace FinalProject_340.Controllers
                             type        = FTYPE
                         }
                 ));
+            }
+        }
+        public void saveImages(IFormFile file, string UUID, string HASH)
+        {
+            if (!Directory.Exists("wwwroot/resources/" + UUID + "/art/"))
+            {
+                Directory.CreateDirectory("wwwroot/resources/" + UUID + "/art/");
+            }
+            resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "30x30.jpg", 30, 30);
+            resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "100x100.jpg", 100, 100);
+            resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "500x500.jpg", 500, 500);
+        }
+        public void resizeImage(IFormFile inputFile, string outputFilePath, int newWidth, int newHeight)
+        {
+            using (var image = new Bitmap(inputFile.OpenReadStream()))
+            {
+                var resizedImage = new Bitmap(newWidth, newHeight);
+                using (var graphics = Graphics.FromImage(resizedImage))
+                {
+                    graphics.DrawImage(image, 0, 0, newWidth, newHeight);
+                }
+                resizedImage.Save(outputFilePath, ImageFormat.Jpeg);
             }
         }
         public async Task<int> SaveFileAsync(IFormFile file, string folderPath, string fileName)

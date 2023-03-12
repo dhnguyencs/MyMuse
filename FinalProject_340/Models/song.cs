@@ -4,7 +4,6 @@ namespace FinalProject_340.Models
 {
     public class Song
     {
-        public int     plays        { get; set; }
         public String  title        { get; set; }
         public String  artist       { get; set; }
         public String  album        { get; set; }
@@ -14,6 +13,7 @@ namespace FinalProject_340.Models
         public String  type         { get; set; }
         public int     fav          { get; set; }
         public int     songLength   { get; set; }
+        public int     plays        { get; set; }
 
         public String formatTime()
         {
@@ -28,9 +28,12 @@ namespace FinalProject_340.Models
                 str_sec.Append(seconds);
             return new String(minutes + ":" + str_sec.ToString());
         }
-        public bool favourited()
+        public bool favourited() { return fav == 0 ? false : true; }
+        public bool checkPath(int x, int y)
         {
-            return fav == 0 ? false : true;
+            if (!File.Exists("wwwroot/resources/" + USR_UUID + "/art/" + songHash + x + "x" + y + ".jpg"))
+                return false;
+            return true;
         }
 
     }
