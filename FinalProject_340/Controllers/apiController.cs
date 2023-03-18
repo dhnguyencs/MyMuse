@@ -57,6 +57,10 @@ namespace FinalProject_340.Controllers
                 ));
             }
         }
+        [HttpPost] IActionResult updateTrack([FromForm] Song update)
+        {
+            return Json(0);
+        }
         public void saveImages(IFormFile file, string UUID, string HASH)
         {
             if (!Directory.Exists("wwwroot/resources/" + UUID + "/art/")) 

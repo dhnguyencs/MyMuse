@@ -16,25 +16,25 @@
     <thead>
         <tr>
             <th colspan="1">&#128420;</th>
-            <th colspan="1" class="text-end">&nbsp</th>
             <th colspan="10">NAME</th>
             <th colspan="1">TIME</th>
             <th colspan="2">ARTIST</th>
             <th colspan="2">ALBUM</th>
             <th colspan="1">PLAYS</th>
+            <th colspan="1" class="text-end">&nbsp</th>
             <th colspan="1"></th>
         </tr>
     </thead>
     <tbody>
         @foreach (Song song in Model.getAllSongs()){
-            <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash@song.type")'>
+            <tr id="@song.songHash" class="hover">
 @*                @if (!song.favourited()){
                     <th colspan="1">&#128420;</th>
                 }
                 else{
                     <td colspan="1">&#10084;</td>
                 }*@
-            <td colspan="1">
+            <td colspan="1" onclick='playTrack("@song.songHash@song.type")'>
                     @if (song.checkPath(100, 100))
                     {
                         <img height="30" width="30" src='@("/resources/" + @Model.UUID + "/art/" + @song.songHash + "100x100.jpg")' />
@@ -44,12 +44,12 @@
                         <img height="0" width="0" src='' />
                     }
                 </td>
-                <td class="text-end">&nbsp;</td>
-                <td colspan="10">@song.title</td>
-                <td colspan="1">@song.formatTime()</td>
-                <td colspan="2">@song.artist</td>
-                <td colspan="2">@song.album</td>
-                <td colspan="1">@song.plays</td>
+                <td colspan="10" onclick='playTrack("@song.songHash@song.type")'>@song.title</td>
+                <td colspan="1" onclick='playTrack("@song.songHash@song.type")'>@song.formatTime()</td>
+                <td colspan="2" onclick='playTrack("@song.songHash@song.type")'>@song.artist</td>
+                <td colspan="2" onclick='playTrack("@song.songHash@song.type")'>@song.album</td>
+                <td colspan="1" onclick='playTrack("@song.songHash@song.type")'>@song.plays</td>
+                <td class="text-end"><a href="#" onclick="updateTrack('@song.songHash')">Edit</a></td>
             </tr>
         }
         <tr>
@@ -200,5 +200,14 @@
     }
     function pauseTrack() {
 
+    }
+</script>
+
+<script>
+    function updateTrack(hash){
+        var element = document.getElementById(hash);
+
+
+        console.log(element);
     }
 </script>
