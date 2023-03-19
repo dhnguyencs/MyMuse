@@ -57,15 +57,44 @@ namespace FinalProject_340.Controllers
                 ));
             }
         }
-        [HttpPost] IActionResult updateTrack([FromForm] Song update)
+        [HttpPost] 
+        public IActionResult updateTrack([FromForm] Song update)
         {
-            return Json(0);
+            //get cookie from request if any
+            string? cookieValueFromReq = Request.Cookies["SessionID"];
+            //get user with cookie
+            Users? user = Users.getUser(cookieValueFromReq);
+            //if either cookie or user is null, redirect to the login page instead
+            if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
+
+            //retrieve the track to be updated from the database
+            Song song = user.getTrack(update.songHash);
+
+            //update operations
+            song.title = update.title;
+            song.artist = update.artist;
+            song.album = update.album;
+
+            //return the results of pushing the update to the database
+            return Json(user.updateTrack(song));
+        }
+        [HttpGet]
+        public IActionResult deleteTrack(string hash)
+        {
+            //get cookie from request if any
+            string? cookieValueFromReq = Request.Cookies["SessionID"];
+            //get user with cookie
+            Users? user = Users.getUser(cookieValueFromReq);
+            //if either cookie or user is null, redirect to the login page instead
+            if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
+            //returns true or false
+            return Json(user.deleteTrack(hash));
+
         }
         public void saveImages(IFormFile file, string UUID, string HASH)
         {
             if (!Directory.Exists("wwwroot/resources/" + UUID + "/art/")) 
                 Directory.CreateDirectory("wwwroot/resources/" + UUID + "/art/");
-
             resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "30x30.jpg", 30, 30);
             resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "100x100.jpg", 100, 100);
             resizeImage(file, "wwwroot/resources/" + UUID + "/art/" + HASH + "500x500.jpg", 500, 500);

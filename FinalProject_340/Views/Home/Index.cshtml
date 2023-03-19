@@ -12,68 +12,77 @@
 </div>*@
 <link rel="stylesheet" href="/css/homeView.css">
 <script src="~/js/TagReader.js"></script>
-<table class="table">
-    <thead>
-        <tr>
-            <th colspan="1">&#128420;</th>
-            <th colspan="10">NAME</th>
-            <th colspan="1">TIME</th>
-            <th colspan="2">ARTIST</th>
-            <th colspan="2">ALBUM</th>
-            <th colspan="1">PLAYS</th>
-            <th colspan="1" class="text-end">&nbsp</th>
-            <th colspan="1"></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (Song song in Model.getAllSongs()){
-            <tr id="@song.songHash" class="hover">
-@*                @if (!song.favourited()){
-                    <th colspan="1">&#128420;</th>
-                }
-                else{
-                    <td colspan="1">&#10084;</td>
-                }*@
-            <td colspan="1" onclick='playTrack("@song.songHash@song.type")'>
-                    @if (song.checkPath(100, 100))
-                    {
-                        <img height="30" width="30" src='@("/resources/" + @Model.UUID + "/art/" + @song.songHash + "100x100.jpg")' />
-                    }
-                    else
-                    {
-                        <img height="0" width="0" src='' />
-                    }
-                </td>
-                <td colspan="10" onclick='playTrack("@song.songHash@song.type")'>@song.title</td>
-                <td colspan="1" onclick='playTrack("@song.songHash@song.type")'>@song.formatTime()</td>
-                <td colspan="2" onclick='playTrack("@song.songHash@song.type")'>@song.artist</td>
-                <td colspan="2" onclick='playTrack("@song.songHash@song.type")'>@song.album</td>
-                <td colspan="1" onclick='playTrack("@song.songHash@song.type")'>@song.plays</td>
-                <td class="text-end"><a href="#" onclick="updateTrack('@song.songHash')">Edit</a></td>
+    <table class="table table-responsive-sm">
+        <thead>
+            <tr>
+                @*<th colspan="1">&#128420;</th>*@
+                <th colspan="1">&nbsp;</th>
+                <th colspan="10">NAME</th>
+                <th colspan="1">TIME</th>
+                <th colspan="2">ARTIST</th>
+                <th colspan="2">ALBUM</th>
+                <th colspan="1">PLAYS</th>
+                <th colspan="1" class="text-end">&nbsp</th>
+                <th colspan="1"></th>
             </tr>
-        }
-        <tr>
-            <td colspan="1">
-@*                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-arrow-up" viewBox="0 0 16 16">
-                    <path d="M8 11a.5.5 0 0 0 .5-.5V6.707l1.146 1.147a.5.5 0 0 0 .708-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 .5.5z" />
-                    <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
-                </svg>*@
-                <img id="img-prev" src="" />
-            </td>
-            <td class="text-end">&nbsp;</td>
-            <td colspan="10"><input id="newTitle" type="text" placeholder="Title" /></td>
-            <td colspan="1"><input id="newArtist" type="text" placeholder="Artist"/></td>
-            <td colspan="2"><input id="newAlbum" type="text" placeholder="Album" /></td>
-            <td colspan="2">
-                <button class="btn-sm" id="_input"> Upload File</button>
-                <input type="file" accept=".mp3,.m4a,.wav,.ogg" id="input" style = "display: none" single />
-                <button class="btn-sm" id="_inputImg"> Upload Image</button>
-                <input type="file" accept=".jpg,.png" id="inputImg" style = "display: none" single />
-            </td>
-            <td colspan="1"><a href="#" id="@Model.UUID">Upload</a></td>
-        </tr>
-    </tbody>
-</table>
+        </thead>
+        <tbody>
+            @foreach (Song song in Model.getAllTracks()){   
+                <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
+                <td colspan="1">
+                        @if (song.checkPath(100, 100))
+                        {
+                            <img height="30" width="30" src='@("/resources/" + @Model.UUID + "/art/" + @song.songHash + "100x100.jpg")' />
+                        }
+                        else
+                        {
+                            <img height="0" width="0" src='' />
+                        }
+                    </td>
+                    <td colspan="10">@song.title</td>
+                    <td colspan="1">@song.formatTime()</td>
+                    <td colspan="2">@song.artist</td>
+                    <td colspan="2">@song.album</td>
+                    <td colspan="1">@song.plays</td>
+                    <td><button class="btn btn-outline-primary btn-sm" onclick="updateTrack('@song.songHash')">Edit</button>  <button class="btn btn-outline-danger btn-sm" onclick="deleteTrack('@song.songHash')">Delete</button></td>
+                </tr>
+            }
+            <tr>
+                <td colspan="1">
+    @*                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-arrow-up" viewBox="0 0 16 16">
+                        <path d="M8 11a.5.5 0 0 0 .5-.5V6.707l1.146 1.147a.5.5 0 0 0 .708-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 .5.5z" />
+                        <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+                    </svg>*@
+                    <img id="img-prev" src="" />
+                </td>
+                <td class="text-end">&nbsp;</td>
+                <td colspan="10"><input id="newTitle" type="text" placeholder="Title" /></td>
+                <td colspan="1"><input id="newArtist" type="text" placeholder="Artist"/></td>
+                <td colspan="2"><input id="newAlbum" type="text" placeholder="Album" /></td>
+                <td colspan="2">
+                    <button class="btn btn-outline-secondary btn-sm" id="_input"> Upload File</button>
+                    <input type="file" accept=".mp3,.m4a,.wav,.ogg" id="input" style = "display: none" single />
+                    <button class="btn btn-outline-secondary btn-sm" id="_inputImg"> Upload Image</button>
+                    <input type="file" accept=".jpg,.png" id="inputImg" style = "display: none" single />
+                </td>
+                <td colspan="1"><button class="btn btn-outline-secondary btn-sm" id="@Model.UUID">Upload</button></td>
+            </tr>
+        </tbody>
+    </table>
+
+<div style="width:100%; padding-left: 7px" class="row abs_b_20">
+    <div class="col">
+        <div class="row">
+            <div class="col" style="max-width: 80px">
+                <img style="width: 73px" id="currentPlayingArt" src="~/music.jpg" />
+            </div>
+            <div class="col">
+                <p id="currentlyPlaying"></p>
+            </div>
+        </div>
+    </div>
+</div>
+<progress id="progressBar" class="abs_b_0" value="0" max="100"></progress>
 @*<div id="_con">
     <div class="popup"
         <p>Hello world</p>
@@ -81,6 +90,37 @@
 </div>*@
 
 <style>
+    #currentlyPlaying {
+/*        position:fixed;
+        bottom: 0px;*/
+        font-size : 14px;
+    }
+    .abs_b_0 {
+        position: fixed;
+        bottom: 0px;
+    }
+    .abs_b_20 {
+        position: fixed;
+        bottom: 20px;
+    }
+
+    #progressBar {
+        width: 100%;
+    }
+
+    #songTable {
+        max-height : 66vh;
+        overflow: scroll;
+    }
+
+    .hideScrollBars {
+        overflow: hidden;
+    }
+
+        .hideScrollBars::-webkit-scrollbar {
+        display: none;
+    }
+
     .hover:hover {
         cursor: pointer;
         background: rgb(200, 200, 200, 1);
@@ -100,19 +140,30 @@
 </style>
 
 <script>
+    let     USR_UUID        = '@Model.UUID';
     let     filename        = null;
     let     currentTrack    = document.createElement("audio");
+    let     _t_status       = false;
     const   inputFile       = document.getElementById("input");
     const   inputImg        = document.getElementById("inputImg");
     const   _inputFile      = document.getElementById("_input");
     const   _inputImg       = document.getElementById("_inputImg");
     const   uploadBtn       = document.getElementById("@Model.UUID");
-            
+    const   _progressBar    = document.getElementById("progressBar");
+    const   currentlyPlaying_text   = document.getElementById("currentlyPlaying");
+    const currentlyPlayingArt       = document.getElementById("currentPlayingArt")
     window.onload = function(){
             uploadBtn.onclick = uploadTrack;
             $("#_input").click( function () { $("#input").trigger('click'); });
             $("#_inputImg").click(  function () { $("#inputImg").trigger('click'); });
     }
+
+    currentTrack.addEventListener('timeupdate', () => {
+        const currentTime = currentTrack.currentTime;
+        const duration = currentTrack.duration;
+        console.log(currentTime);
+        progressBar.value = (currentTime / duration) * 100;
+    });
 
     inputImg.onchange = function() {
         readURL(inputImg)
@@ -138,7 +189,6 @@
             const mp3tag = new MP3Tag(buffer)
             mp3tag.read()
             let tags = !mp3tag.tags.v1 ? mp3tag.tags.v2 : mp3tag.tags.v1;
-            console.log(tags);
             let setLabels = function(object){
                 document.getElementById("newTitle") .value = object.title  ? object.title :  "";
                 document.getElementById("newArtist").value = object.artist ? object.artist : "";
@@ -191,23 +241,111 @@
         xhReq.open("POST", "/api/uploadTrack", true);
         xhReq.send(formData);
     }
-    function playTrack(songHash){
-        songHash = songHash.toString();
-        console.log(songHash);
-        currentTrack.src = "/resources/@Model.UUID/songs/" + songHash;
-        console.log(currentTrack.src);
-        currentTrack.play();
+    function playTrack(songHash, audio){
+        if(!currentTrack.id || songHash !== currentTrack.id){
+            currentTrack.src = "/resources/@Model.UUID/songs/" + songHash + audio;
+            currentTrack.id = songHash;
+
+            var element = document.getElementById(songHash);
+            var cells   = element.cells;
+            let title   = cells[1].innerText;
+            let artist  = cells[3].innerText;
+
+            currentlyPlaying_text.innerText = title + " \n " + artist;
+            currentlyPlayingArt.src = `/resources/@Model.UUID/art/${songHash}500x500.jpg`
+            resumeTrack();
+        }else{
+            if(_t_status){
+                pauseTrack();
+            }else{
+                resumeTrack();
+            }
+        }
     }
     function pauseTrack() {
-
+        _t_status = false;
+        currentTrack.pause();
+    }
+    function resumeTrack(){
+        _t_status = true;
+        currentTrack.play();
     }
 </script>
 
 <script>
-    function updateTrack(hash){
-        var element = document.getElementById(hash);
+    var isEditing = new Map();
+    let updateTrack = function (hash){
+        event.stopPropagation()
+        var eHash       = `_${hash}`;
+        if(!isEditing.has(hash)){
+            var element     = document.getElementById(hash);
+            var cells       = element.cells;
+            let title       = cells[1];
+            let artist      = cells[3];
+            let album       = cells[4];
+            let _title      = title.innerText;
+            let _artist     = artist.innerText;
+            let _album      = album.innerText;
+            let btn_html    = cells[6].innerHTML;
 
+            isEditing.set(hash, {
+                _title   : _title,
+                _artist  : _artist,
+                _album   : _album,
+                title    : title,
+                artist   : artist,
+                album    : album,  
+                btn_html : btn_html,
+                btn_html_b : cells[6],
+                element : element,
+                on_fn   : element.onclick,
+            });
+            element.onclick = null;
+            title.innerHTML = `<input id="newTitle${eHash}" type="text" placeholder="${_title}" value="${_title}" />`;
+            artist.innerHTML = `<input id="newArtist${eHash}" type="text" placeholder="${_artist}" value="${_artist}" />`;
+            album.innerHTML = `<input id="newAlbum${eHash}" type="text" placeholder="${_album}" value="${_album}" />`;
 
-        console.log(element);
+            cells[6].innerHTML = `<button class="btn btn-outline-primary btn-sm" onclick=updateTrack("${hash}")>Confirm</button>`;
+
+        }else{
+            let _s_         = isEditing.get(hash);
+            let newArtist   = document.getElementById("newArtist" + eHash).value ? document.getElementById("newArtist" + eHash).value : _s_._artist;
+            let newTitle    = document.getElementById("newTitle" + eHash).value ? document.getElementById("newTitle" + eHash).value : _s_._title;
+            let newAlbum    = document.getElementById("newAlbum" + eHash).value ? document.getElementById("newAlbum" + eHash).value : _s_._album;
+
+            let formData = new FormData();
+            formData.append("title", newTitle);
+            formData.append("artist", newArtist);
+            formData.append("album", newAlbum);
+            formData.append("songHash", hash);
+
+            let xhReq = new XMLHttpRequest();
+            xhReq.onreadystatechange = function(){
+                if (xhReq.readyState == 4 && xhReq.status == 200) {
+                    _s_.artist.innerText = newArtist;
+                    _s_.title.innerText = newTitle;
+                    _s_.album.innerText = newAlbum;
+                    _s_.btn_html_b.innerHTML = _s_.btn_html;
+                }
+                if (xhReq.readyState == 4 && xhReq.status == 500) {
+                    alert("Failed!");
+                    window.location.href = "/";
+                }
+            }
+            xhReq.open("POST", "/api/updateTrack", true);
+            xhReq.send(formData);
+
+            _s_.element.onclick = _s_.on_fn;
+            isEditing.delete(hash);
+        }
+
+    }
+    function deleteTrack(hash){
+        event.stopPropagation()
+        fetch(`/api/deleteTrack?hash=${hash}`).then((response) => response.json()).then(function (data) {
+            if(data == true){
+                document.getElementById(hash).remove();
+            }
+        });
     }
 </script>
