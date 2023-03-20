@@ -40,6 +40,8 @@ namespace FinalProject_340.Models
 
         private Dictionary<string, string> _listSet = new Dictionary<string, string>();
 
+        SqlDBConnection<Song> sqlDB_tracks = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
+
         public Users() { }
         public Users(string EMAIL, string PASSWORD)
         {
@@ -58,18 +60,53 @@ namespace FinalProject_340.Models
         }
         public bool AddSong(Song song)
         {
-            SqlDBConnection<Song> sqlDBConnection = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
-            return sqlDBConnection.insertIntoTable(song);
+            return sqlDB_tracks.insertIntoTable(song);
         }
-        public List<Song> getAllSongs()
+        public bool updateTrack(Song song)
         {
-            SqlDBConnection<Song> sqlDBConnection = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
-            List<Song> songs = sqlDBConnection.getList(new Dictionary<string, string>() {
+            sqlDB_tracks.update(song, new Dictionary<string, string>()
+            {
+                {
+                    "SongHash", song.songHash
+                },
+                {
+                    "USR_UUID", this.UUID
+                }
+            });
+            return true;
+        }
+        public List<Song> getAllTracks()
+        {
+            List<Song> songs = sqlDB_tracks.getList(new Dictionary<string, string>() {
                 {
                     "USR_UUID", this.UUID
                 }
             }, 9999);
             return songs;
+        }
+        public Song getTrack(string hash)
+        {
+            return sqlDB_tracks.getFirstOrDefault(new Dictionary<string, string>()
+            {
+                {
+                    "songHash", hash
+                },
+                {
+                    "USR_UUID", this.UUID
+                }
+            });
+        }
+        public bool deleteTrack(string hash)
+        {
+            return sqlDB_tracks.delete(new Dictionary<string, string>()
+            {
+                {
+                    "songHash", hash
+                },
+                {
+                    "USR_UUID", this.UUID
+                }
+            });
         }
     }
 }
