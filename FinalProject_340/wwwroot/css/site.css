@@ -24,9 +24,9 @@ h1 {
 body {
     margin-bottom: 60px;
     overflow: hidden;
-    /*background: #90EE90;*/ /*default background color, with no image and no gradient change*/
-    /*background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(0, 100, 0, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");*/ /*syntax to support older browsers*/
-    /*background: linear-gradient(rgba(144, 238, 144, 1), rgba(0, 100, 0, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");*/ /*syntax to support newer browsers*/
+    background: #90EE90;
+    default : background color, with no image and no gradient change background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
+    background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
     background-size: cover;
 }
 
@@ -87,7 +87,8 @@ body {
 
 .hover:hover {
     cursor: pointer;
-    background: rgb(200, 200, 200, 1);
+    background: rgba(60, 100, 60, 0.8);
+    color: white;
 }
 
 .popup {
