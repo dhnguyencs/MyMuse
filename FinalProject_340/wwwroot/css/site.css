@@ -18,7 +18,7 @@ h1 {
     line-height: 2.5; /*creates some height between header and body*/
     font-family: "Shantell Sans", cursive; /*font style for text*/
     font-weight: bold; /*makes text bolder*/
-    color: deeppink; /*font color for text*/
+    color: darkgrey; /*font color for text*/
 }
 
 body {
@@ -36,7 +36,7 @@ body {
     font-weight: bold; /*makes text bolder*/
     font-family: "Shantell Sans", cursive; /*font style for text*/
     text-shadow: 2px 2px 8px black; /*darkens shadow of text*/
-    color: deeppink; /*font color for text*/
+    color: darkgray; /*font color for text*/
     position: static;
     padding-block: auto; /*this makes sure contents stay in the middle of its container*/
     padding: initial;
@@ -102,5 +102,5 @@ body {
     border-radius: 5px;
 }
 .table table-responsive-sm thead {
-    color: deeppink;
+    color: darkgrey;
 }
