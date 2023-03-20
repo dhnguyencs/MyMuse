@@ -17,18 +17,19 @@
             <tr>
                 @*<th colspan="1">&#128420;</th>*@
                 <th colspan="1">&nbsp;</th>
-                <th colspan="10">NAME</th>
-                <th colspan="1">TIME</th>
-                <th colspan="2">ARTIST</th>
-                <th colspan="2">ALBUM</th>
-                <th colspan="1">PLAYS</th>
+                <th colspan="10" style="cursor:pointer" onclick="reloadWindowSort(1)">NAME</th>
+                <th colspan="1" style="cursor:pointer" onclick="reloadWindowSort(2)">TIME</th>
+                <th colspan="2" style="cursor:pointer" onclick="reloadWindowSort(3)">ARTIST</th>
+                <th colspan="2" style="cursor:pointer" onclick="reloadWindowSort(4)">ALBUM</th>
+                <th colspan="1" style="cursor:pointer" onclick="reloadWindowSort(5)">PLAYS</th>
                 <th colspan="1" class="text-end">&nbsp</th>
                 <th colspan="1"></th>
             </tr>
         </thead>
         <tbody>
-            @foreach (Song song in Model.getAllTracks()){   
-                <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
+        @foreach (Song song in Model.getAllTracks((int)ViewData["sort"]))
+        {
+            <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
                 <td colspan="1">
                         @if (song.checkPath(100, 100))
                         {
@@ -175,6 +176,9 @@
 
     inputImg.onchange = function() {
         readURL(inputImg)
+    }
+    function reloadWindowSort(order){
+        window.location.href = `?sort=${order}`;
     }
     function readURL(input) {
       if (input.files && input.files[0]) {

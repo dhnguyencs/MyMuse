@@ -75,13 +75,24 @@ namespace FinalProject_340.Models
             });
             return true;
         }
-        public List<Song> getAllTracks()
+        public List<Song> getAllTracks(int order)
         {
-            return sqlDB_tracks.getList(new Dictionary<string, string>() {
+            List<Song> songs = sqlDB_tracks.getList(new Dictionary<string, string>() {
                 {
                     "USR_UUID", this.UUID
                 }
             }, 9999);
+            if(order == 1)
+                songs.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
+            if (order == 2)
+                songs.Sort((x, y) => x.songLength.CompareTo(y.songLength));
+            if (order == 3)
+                songs.Sort((x, y) => x.artist.ToLower().CompareTo(y.artist.ToLower()));
+            if (order == 4)
+                songs.Sort((x, y) => x.album.ToLower().CompareTo(y.album.ToLower()));
+            if (order == 5)
+                songs.Sort((x, y) => x.plays.CompareTo(y.plays));
+            return songs;
         }
         public Song getTrack(string hash)
         {
