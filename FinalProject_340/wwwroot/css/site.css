@@ -1,18 +1,48 @@
 html {
-  font-size: 14px;
+    font-size: 14px;
 }
 
 @media (min-width: 768px) {
-  html {
-    font-size: 16px;
-  }
+    html {
+        font-size: 16px;
+    }
 }
 
 html {
-  position: relative;
-  min-height: 100%;
+    position: relative;
+    min-height: 100%;
+}
+
+h1 {
+    text-align: center; /*centers the header*/
+    line-height: 2.5; /*creates some height between header and body*/
+    font-family: "Shantell Sans", cursive; /*font style for text*/
+    font-weight: bold; /*makes text bolder*/
+    color: deeppink; /*font color for text*/
 }
 
 body {
-  margin-bottom: 60px;
+    margin-bottom: 60px;
+    overflow: hidden;
+    background: #90EE90; /*default background color, with no image and no gradient change*/
+    background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(0, 100, 0, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg"); /*syntax to support older browsers*/
+    background: linear-gradient(rgba(144, 238, 144, 1), rgba(0, 100, 0, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg"); /*syntax to support newer browsers*/
+    background-size: cover;
+}
+
+.form-group {
+    text-align: left;
+    font-size: 25px;
+    font-weight: bold; /*makes text bolder*/
+    font-family: "Shantell Sans", cursive; /*font style for text*/
+    text-shadow: 2px 2px 8px black; /*darkens shadow of text*/
+    color: deeppink; /*font color for text*/
+    position: static;
+    padding-block: auto; /*this makes sure contents stay in the middle of its container*/
+    padding: initial;
+}
+
+.table table-responsive-sm {
+    font-size: 25px;
+    font-family: "Shantell Sans", cursive;
 }
