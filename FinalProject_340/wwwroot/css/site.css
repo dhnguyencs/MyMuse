@@ -18,14 +18,14 @@ h1 {
     line-height: 2.5; /*creates some height between header and body*/
     font-family: "Shantell Sans", cursive; /*font style for text*/
     font-weight: bold; /*makes text bolder*/
-    color: darkgrey; /*font color for text*/
+    color: darkblue; /*font color for text*/
 }
 
 body {
     margin-bottom: 60px;
     overflow: hidden;
     background: #90EE90;
-    default : background color, with no image and no gradient change background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
+    background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
     background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
     background-size: cover;
 }
@@ -36,7 +36,7 @@ body {
     font-weight: bold; /*makes text bolder*/
     font-family: "Shantell Sans", cursive; /*font style for text*/
     text-shadow: 2px 2px 8px black; /*darkens shadow of text*/
-    color: darkgray; /*font color for text*/
+    color: darkblue; /*font color for text*/
     position: static;
     padding-block: auto; /*this makes sure contents stay in the middle of its container*/
     padding: initial;
@@ -103,5 +103,5 @@ body {
     border-radius: 5px;
 }
 .table table-responsive-sm thead {
-    color: darkgrey;
+    color: darkblue;
 }

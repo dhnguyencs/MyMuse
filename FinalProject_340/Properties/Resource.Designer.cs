@@ -61,7 +61,7 @@ namespace FinalProject_340.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Data Source=DESKTOP-TA0OD5P;Initial Catalog=userDB_340;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;Connect Timeout = 100;.
+        ///   Looks up a localized string similar to Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=userDB_340;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;Connect Timeout = 100;.
         /// </summary>
         public static string appData {
             get {
@@ -75,6 +75,15 @@ namespace FinalProject_340.Properties {
         public static string appData_ {
             get {
                 return ResourceManager.GetString("appData_", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;.
+        /// </summary>
+        public static string appData1 {
+            get {
+                return ResourceManager.GetString("appData1", resourceCulture);
             }
         }
     }

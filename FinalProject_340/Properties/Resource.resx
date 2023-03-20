@@ -118,7 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="appData" xml:space="preserve">
-    <value>Data Source=DESKTOP-TA0OD5P;Initial Catalog=userDB_340;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;Connect Timeout = 100;</value>
+    <value>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=userDB_340;Integrated Security=True;Connect Timeout=60;Encrypt=False;TrustServerCertificate=False;ApplicationIntent=ReadWrite;MultiSubnetFailover=False;Connect Timeout = 100;</value>
   </data>
   <data name="appData1" xml:space="preserve">
     <value>Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=userDB_340;Connect Timeout=100;</value>
