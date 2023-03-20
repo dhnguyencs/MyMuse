@@ -70,7 +70,10 @@
         </tbody>
     </table>
 
-<div style="width:100%; padding-left: 7px" class="row abs_b_20">
+<div class="row player player_bg">
+    <div id="progressBar"></div>
+    <div id="progressBar_time"></div>
+    <div id="control_btns" onclick="toggle_control_btn()"></div>
     <div class="col">
         <div class="row">
             <div class="col" style="max-width: 80px">
@@ -82,7 +85,7 @@
         </div>
     </div>
 </div>
-<progress id="progressBar" class="abs_b_0" value="0" max="100"></progress>
+@*<progress id="progressBar" class="abs_b_0" value="0" max="100"></progress>*@
 @*<div id="_con">
     <div class="popup"
         <p>Hello world</p>
@@ -90,53 +93,43 @@
 </div>*@
 
 <style>
-    #currentlyPlaying {
-/*        position:fixed;
-        bottom: 0px;*/
-        font-size : 14px;
-    }
-    .abs_b_0 {
-        position: fixed;
-        bottom: 0px;
-    }
-    .abs_b_20 {
-        position: fixed;
-        bottom: 20px;
+    #currentPlayingArt {
+        border-radius : 5px;
     }
 
-    #progressBar {
-        width: 100%;
-    }
-
-    #songTable {
-        max-height : 66vh;
-        overflow: scroll;
-    }
-
-    .hideScrollBars {
-        overflow: hidden;
-    }
-
-        .hideScrollBars::-webkit-scrollbar {
-        display: none;
-    }
-
-    .hover:hover {
+    #control_btns {
+        position: absolute;
+        top: 40px;
+        width: 70px;
+        height: 70px;
+        border-radius: 70px;
+        background-image: url(play_btns.png);
+        background-size:cover;
+        background-position-x: 0px;
+        background-repeat: repeat;
         cursor: pointer;
-        background: rgb(200, 200, 200, 1);
     }
-    .popup {
-        z-index: 9999;
-        position: fixed;
+    #progressBar {
+        position: absolute;
+        background-color: forestgreen;
+        height: 5px;
+        left: -5px;
         top: 0px;
-        left: 10px;
-        background: white;
-        padding: 20px;
-        -webkit-box-shadow: 0px 2px 10px 5px rgba(0,0,0,0.27);
-        box-shadow: 0px 2px 10px 5px rgba(0,0,0,0.27);
-        border-radius: 5px;
+        width:.1px;
+        margin:0;
+        padding:0;
+    }
+    .player {
+        color: white;
     }
 
+    #progressBar_time{
+        position: absolute;
+        font-size: 10px;
+        top: 6px;
+        left: 0px;
+        color: rgb(200, 200, 200);
+    }
 </style>
 
 <script>
@@ -151,18 +144,33 @@
     const   uploadBtn       = document.getElementById("@Model.UUID");
     const   _progressBar    = document.getElementById("progressBar");
     const   currentlyPlaying_text   = document.getElementById("currentlyPlaying");
-    const currentlyPlayingArt       = document.getElementById("currentPlayingArt")
+    const   currentlyPlayingArt     = document.getElementById("currentPlayingArt")
     window.onload = function(){
-            uploadBtn.onclick = uploadTrack;
-            $("#_input").click( function () { $("#input").trigger('click'); });
-            $("#_inputImg").click(  function () { $("#inputImg").trigger('click'); });
+        uploadBtn.onclick = uploadTrack;
+        $("#_input").click( function () { $("#input").trigger('click'); });
+        $("#_inputImg").click(  function () { $("#inputImg").trigger('click'); });
+        centerWindow("control_btns");
     }
 
     currentTrack.addEventListener('timeupdate', () => {
+        const secondsToTime = (_seconds) => {
+            let minutes = parseInt(_seconds / 60);
+            let seconds = parseInt(_seconds % 60);
+            let time = "";
+            time = time + minutes + ":";
+            if(seconds < 10){
+                time = time + "0" + seconds;
+            }else{
+                time = time + seconds;
+            }
+            return time;
+        };
         const currentTime = currentTrack.currentTime;
         const duration = currentTrack.duration;
-        console.log(currentTime);
-        progressBar.value = (currentTime / duration) * 100;
+        const perc_filled = currentTime/duration;
+        _progressBar.style.width = `${window.innerWidth * perc_filled}px`;
+        
+        document.getElementById("progressBar_time").innerText = secondsToTime(currentTime) + " / " + secondsToTime(duration);
     });
 
     inputImg.onchange = function() {
@@ -246,13 +254,16 @@
             currentTrack.src = "/resources/@Model.UUID/songs/" + songHash + audio;
             currentTrack.id = songHash;
 
+            updatePlays(songHash);
+
             var element = document.getElementById(songHash);
             var cells   = element.cells;
             let title   = cells[1].innerText;
             let artist  = cells[3].innerText;
+            let album   = cells[4].innerText;
 
-            currentlyPlaying_text.innerText = title + " \n " + artist;
-            currentlyPlayingArt.src = `/resources/@Model.UUID/art/${songHash}500x500.jpg`
+            currentlyPlaying_text.innerText = title + " \n " + artist + "\n" + album;
+            currentlyPlayingArt.src = `/resources/@Model.UUID/art/${songHash}500x500.jpg`;
             resumeTrack();
         }else{
             if(_t_status){
@@ -260,6 +271,15 @@
             }else{
                 resumeTrack();
             }
+        }
+    }
+    function toggle_control_btn(){
+        if (_t_status) {
+            pauseTrack();
+            document.getElementById("control_btns").style.setProperty("background-position-x", `-89px` );
+        } else {
+            resumeTrack();
+            document.getElementById("control_btns").style.setProperty("background-position-x", `0px`);
         }
     }
     function pauseTrack() {
@@ -340,6 +360,22 @@
         }
 
     }
+    function updatePlays(hash){
+        let formData = new FormData();
+        formData.append("plays", 921873);
+        formData.append("songHash", hash);
+        let xhReq = new XMLHttpRequest();
+        xhReq.onreadystatechange = function () {
+            if (xhReq.readyState == 4 && xhReq.status == 200) {
+                document.getElementById(hash).cells[5].innerText = (parseInt(document.getElementById(hash).cells[5].innerText) + 1).toString();
+            }
+            if (xhReq.readyState == 4 && xhReq.status == 500) {
+        
+            }
+        }
+        xhReq.open("POST", "/api/updateTrack", true);
+        xhReq.send(formData);
+    }
     function deleteTrack(hash){
         event.stopPropagation()
         fetch(`/api/deleteTrack?hash=${hash}`).then((response) => response.json()).then(function (data) {
@@ -347,5 +383,26 @@
                 document.getElementById(hash).remove();
             }
         });
+    }
+</script>
+
+<script>
+    window.addEventListener('resize', function(){
+        centerWindow("control_btns");
+    });
+    function centerWindow(element_id) {
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+
+        let element = document.getElementById(element_id);
+
+        let elementWidth = element.getBoundingClientRect().width;
+        let elementHeight = element.getBoundingClientRect().height;
+
+        console.log(w + " " + h + " " + elementWidth);
+
+        //element.style.top = (innerHeight * .25) + "px";
+        element.style.left = ((innerWidth - elementWidth) * .5) + "px";
+
     }
 </script>

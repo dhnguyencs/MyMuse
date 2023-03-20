@@ -70,6 +70,12 @@ namespace FinalProject_340.Controllers
             //retrieve the track to be updated from the database
             Song song = user.getTrack(update.songHash);
 
+            if(update.plays == 921873)
+            {
+                song.plays++;
+                return Json(user.updateTrack(song));
+            }
+
             //update operations
             song.title = update.title;
             song.artist = update.artist;

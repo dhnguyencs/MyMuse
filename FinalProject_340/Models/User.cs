@@ -77,12 +77,11 @@ namespace FinalProject_340.Models
         }
         public List<Song> getAllTracks()
         {
-            List<Song> songs = sqlDB_tracks.getList(new Dictionary<string, string>() {
+            return sqlDB_tracks.getList(new Dictionary<string, string>() {
                 {
                     "USR_UUID", this.UUID
                 }
             }, 9999);
-            return songs;
         }
         public Song getTrack(string hash)
         {
