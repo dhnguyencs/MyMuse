@@ -270,11 +270,7 @@
             currentlyPlayingArt.src = `/resources/@Model.UUID/art/${songHash}500x500.jpg`;
             resumeTrack();
         }else{
-            if(_t_status){
-                pauseTrack();
-            }else{
-                resumeTrack();
-            }
+            toggle_control_btn();
         }
     }
     function toggle_control_btn(){
@@ -321,8 +317,8 @@
                 album    : album,  
                 btn_html : btn_html,
                 btn_html_b : cells[6],
-                element : element,
-                on_fn   : element.onclick,
+                element  : element,
+                on_fn    : element.onclick,
             });
             element.onclick = null;
             title.innerHTML = `<input id="newTitle${eHash}" type="text" placeholder="${_title}" value="${_title}" />`;

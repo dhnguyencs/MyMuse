@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Include="wwwroot\css\Controllers\apiController.cs" />
-    <Compile Include="wwwroot\css\Controllers\HomeController.cs" />
-    <Compile Include="wwwroot\css\Controllers\LoginController.cs" />
+    <Content Include="Controllers\apiController.cs" />
+    <Content Include="Controllers\HomeController.cs" />
+    <Content Include="Controllers\LoginController.cs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -1,11 +1,5 @@
 ﻿using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore.Metadata.Conventions;
-using Microsoft.EntityFrameworkCore.Storage;
-using Microsoft.Identity.Client;
-using Microsoft.IdentityModel.Tokens;
-using System.Collections.ObjectModel;
 using System.Reflection;
-using System.Reflection.PortableExecutable;
 
 namespace FinalProject_340.Models
 {
@@ -82,7 +76,7 @@ namespace FinalProject_340.Models
                 },
             };
         }
-        public String generateSqlInsertQuery(TYPE model)
+        private String generateSqlInsertQuery(TYPE model)
         {
             String newSqlQuery = "insert into " + _tableName + " (";
 
@@ -110,7 +104,7 @@ namespace FinalProject_340.Models
             System.Console.WriteLine(newSqlQuery);
             return newSqlQuery;
         }
-        public SqlCommand createInsertSqlCommand(TYPE model)
+        private SqlCommand createInsertSqlCommand(TYPE model)
         {
             //create a new query based on the model ie -- insert into table () values ()
             String newSqlQuery = generateSqlInsertQuery(model);
@@ -154,7 +148,7 @@ namespace FinalProject_340.Models
             _connection.Close();
             return true;
         }
-        public String createRawSqlUpdate(TYPE model, Dictionary<string, string> conditions)
+        private String createRawSqlUpdate(TYPE model, Dictionary<string, string> conditions)
         {
             String sqlRaw = "update " + _tableName + " set ";
             foreach (PropertyInfo prop in _props)
@@ -177,7 +171,7 @@ namespace FinalProject_340.Models
             sqlRaw = sqlRaw.Substring(0, sqlRaw.Length - 4) + " ";
             return sqlRaw;
         }
-        public String createRawSqlDelete(Dictionary<string, string> conditions)
+        private String createRawSqlDelete(Dictionary<string, string> conditions)
         {
             String sqlRaw = "delete from " + _tableName + " where ";
             foreach (PropertyInfo prop in _props)
@@ -237,7 +231,7 @@ namespace FinalProject_340.Models
             if (re == 0) return false;
             return true;
         }
-        public String generateConditionals(String incompleteSqllQuery, Dictionary<string, string> conditions)
+        private String generateConditionals(String incompleteSqllQuery, Dictionary<string, string> conditions)
         {
             conditions = conditions.toLowerCaseKey();
             bool f = false;

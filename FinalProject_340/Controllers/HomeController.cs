@@ -22,14 +22,10 @@ namespace FinalProject_340.Controllers
             //get user with cookie
             Users ? user = Users.getUser(cookieValueFromReq);
             //if either cookie or user is null, redirect to the login page instead
-            if (!ViewData.ContainsKey("sort"))
-            {
+            if (!Request.Cookies.ContainsKey("sort"))
                 ViewData["sort"] = 1;
-            }
-            if(sort > 0)
-            {
+            if(sort != 0)
                 ViewData["sort"] = sort;
-            }
             if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
             //return the main page, passing in the model of the user
             return View(user);
