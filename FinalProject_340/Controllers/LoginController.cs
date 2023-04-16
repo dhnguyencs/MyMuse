@@ -8,9 +8,9 @@ namespace FinalProject_340.Controllers
         public IActionResult Index()
         {
             //get cookie
-            string ? cookie = Request.Cookies["sessionID"];
+            //string ? cookie = Request.Cookies["sessionID"];
             //authenticate user with cookie
-            Users? user = Users.getUser(cookie);
+            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
             //check if either user is null or cookie is null
             if (user != null && !String.IsNullOrEmpty(user.UUID))
                 return RedirectToAction("Index", "Home");
@@ -25,12 +25,17 @@ namespace FinalProject_340.Controllers
             //create a new sq connection to the users table
             SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
             //hash the provided username + password, then attempt to retrieve user with the hash
+
             Users? user = newConnection.getFirstOrDefault(new Dictionary<string, string>()
             {
                 {"UUID",  (info.EMAIL + info.PASSWORD).toHash()}
             });
+
+            //Users? user = (Users)ControllerContext.HttpContext.Items["User"];
+
+
             //if user is null redirect to login page
-            if(user == null) return RedirectToAction("Index", "Login");
+            if (user == null) return RedirectToAction("Index", "Login");
 
             //otherwise, create a new token with the user's uuid 
             SessionTokens newToken = new SessionTokens(user.UUID);

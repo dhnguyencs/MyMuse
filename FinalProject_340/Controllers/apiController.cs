@@ -14,11 +14,11 @@ namespace FinalProject_340.Controllers
             using (var stream = song.formFile.OpenReadStream())
             {
                 //get cookie from request if any
-                string? cookieValueFromReq = Request.Cookies["SessionID"];
+                //string? cookieValueFromReq = Request.Cookies["SessionID"];
                 //get user with cookie
-                Users? user = Users.getUser(cookieValueFromReq);
+                Users? user = (Users)ControllerContext.HttpContext.Items["User"];
                 //if either cookie or user is null, redirect to the login page instead
-                if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
+                //if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
                 var tagFile = TagLib.File.Create(new GenericAudioStream(song.formFile.FileName, stream));
                 string MiemeType = tagFile.MimeType.ToLower();
                 if (
@@ -59,12 +59,14 @@ namespace FinalProject_340.Controllers
         [HttpPost] 
         public IActionResult updateTrack([FromForm] Song update)
         {
-            //get cookie from request if any
-            string? cookieValueFromReq = Request.Cookies["SessionID"];
-            //get user with cookie
-            Users? user = Users.getUser(cookieValueFromReq);
-            //if either cookie or user is null, redirect to the login page instead
-            if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
+            ////get cookie from request if any
+            //string? cookieValueFromReq = Request.Cookies["SessionID"];
+            ////get user with cookie
+            //Users? user = Users.getUser(cookieValueFromReq);
+            ////if either cookie or user is null, redirect to the login page instead
+            //if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
+
+            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
 
             //retrieve the track to be updated from the database
             Song song = user.getTrack(update.songHash);
@@ -86,15 +88,9 @@ namespace FinalProject_340.Controllers
         [HttpGet]
         public IActionResult deleteTrack(string hash)
         {
-            //get cookie from request if any
-            string? cookieValueFromReq = Request.Cookies["SessionID"];
-            //get user with cookie
-            Users? user = Users.getUser(cookieValueFromReq);
-            //if either cookie or user is null, redirect to the login page instead
-            if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
+            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
             //returns true or false
             return Json(user.deleteTrack(hash));
-
         }
         public void saveImages(IFormFile file, string UUID, string HASH)
         {

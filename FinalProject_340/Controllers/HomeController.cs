@@ -18,15 +18,15 @@ namespace FinalProject_340.Controllers
         public IActionResult Index(int sort)
         {
             //get cookie from request if any
-            string? cookieValueFromReq = Request.Cookies["SessionID"];
+            //string? cookieValueFromReq = Request.Cookies["SessionID"];
             //get user with cookie
-            Users ? user = Users.getUser(cookieValueFromReq);
+            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
             //if either cookie or user is null, redirect to the login page instead
             if (!Request.Cookies.ContainsKey("sort"))
                 ViewData["sort"] = 1;
             if(sort != 0)
                 ViewData["sort"] = sort;
-            if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
+            //if (user == null) return RedirectToAction("Index", "Login");
             //return the main page, passing in the model of the user
             return View(user);
         }
