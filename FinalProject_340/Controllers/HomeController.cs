@@ -1,4 +1,5 @@
-﻿using FinalProject_340.Models;
+﻿using FinalProject_340.Middleware;
+using FinalProject_340.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
@@ -6,6 +7,7 @@ using System.Diagnostics;
 
 namespace FinalProject_340.Controllers
 {
+    [Route("[controller]/[action]")]
     public class HomeController : Controller
     {
         private readonly ILogger<HomeController> _logger;
@@ -14,21 +16,18 @@ namespace FinalProject_340.Controllers
         {
             _logger = logger;
         }
-
+        [Route("")]
+        [Route("/{Controller=Home}/{sort?}")]
+        [Route("/{Action=Index}/{sort?}")]
+        [Route("/{Controller=Home}/{Action=Index}/{sort?}")]
+        [Route("/{sort?}")]
         public IActionResult Index(int sort)
         {
-            //get cookie from request if any
-            //string? cookieValueFromReq = Request.Cookies["SessionID"];
-            //get user with cookie
-            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
-            //if either cookie or user is null, redirect to the login page instead
             if (!Request.Cookies.ContainsKey("sort"))
                 ViewData["sort"] = 1;
             if(sort != 0)
                 ViewData["sort"] = sort;
-            //if (user == null) return RedirectToAction("Index", "Login");
-            //return the main page, passing in the model of the user
-            return View(user);
+            return View(Users_Service._user);
         }
 
         public IActionResult Privacy()

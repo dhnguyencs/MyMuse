@@ -1,4 +1,5 @@
-﻿using FinalProject_340.Models;
+﻿using FinalProject_340.Middleware;
+using FinalProject_340.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.Drawing;
 using System.Drawing.Imaging;
@@ -16,7 +17,6 @@ namespace FinalProject_340.Controllers
                 //get cookie from request if any
                 //string? cookieValueFromReq = Request.Cookies["SessionID"];
                 //get user with cookie
-                Users? user = (Users)ControllerContext.HttpContext.Items["User"];
                 //if either cookie or user is null, redirect to the login page instead
                 //if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
                 var tagFile = TagLib.File.Create(new GenericAudioStream(song.formFile.FileName, stream));
@@ -34,16 +34,16 @@ namespace FinalProject_340.Controllers
                 if (MiemeType.Contains("m4a")) FTYPE = ".m4a";
                 if (MiemeType.Contains("wav")) FTYPE = ".wav";
 
-                string newHash = (song.formFile.GetHashCode().ToString() + user.UUID).toHash();
+                string newHash = (song.formFile.GetHashCode().ToString() + Users_Service._user.UUID).toHash();
 
-                SaveFileAsync(song.formFile, "wwwroot/resources/" + user.UUID + "/songs", newHash + FTYPE);
+                SaveFileAsync(song.formFile, "wwwroot/resources/" + Users_Service._user.UUID + "/songs", newHash + FTYPE);
 
-                if(song.albumArt != null) saveImages(song.albumArt, user.UUID, newHash);
+                if(song.albumArt != null) saveImages(song.albumArt, Users_Service._user.UUID, newHash);
 
-                return Json(user.AddSong(
+                return Json(Users_Service._user.AddSong(
                     new Song()
                         {
-                            USR_UUID    = user.UUID                                             ,
+                            USR_UUID    = Users_Service._user.UUID                                             ,
                             title       = song.title                                            ,
                             artist      = song.artist                                           ,
                             album       = song.album                                            ,
@@ -59,22 +59,13 @@ namespace FinalProject_340.Controllers
         [HttpPost] 
         public IActionResult updateTrack([FromForm] Song update)
         {
-            ////get cookie from request if any
-            //string? cookieValueFromReq = Request.Cookies["SessionID"];
-            ////get user with cookie
-            //Users? user = Users.getUser(cookieValueFromReq);
-            ////if either cookie or user is null, redirect to the login page instead
-            //if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
-
-            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
-
             //retrieve the track to be updated from the database
-            Song song = user.getTrack(update.songHash);
+            Song song = Users_Service._user.getTrack(update.songHash);
 
             if(update.plays == 921873)
             {
                 song.plays++;
-                return Json(user.updateTrack(song));
+                return Json(Users_Service._user.updateTrack(song));
             }
 
             //update operations
@@ -83,14 +74,13 @@ namespace FinalProject_340.Controllers
             song.album = update.album;
 
             //return the results of pushing the update to the database
-            return Json(user.updateTrack(song));
+            return Json(Users_Service._user.updateTrack(song));
         }
         [HttpGet]
         public IActionResult deleteTrack(string hash)
         {
-            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
             //returns true or false
-            return Json(user.deleteTrack(hash));
+            return Json(Users_Service._user.deleteTrack(hash));
         }
         public void saveImages(IFormFile file, string UUID, string HASH)
         {

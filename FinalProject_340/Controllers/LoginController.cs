@@ -1,18 +1,19 @@
-﻿using FinalProject_340.Models;
+﻿using FinalProject_340.Middleware;
+using FinalProject_340.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace FinalProject_340.Controllers
 {
     public class LoginController : Controller
     {
+
         public IActionResult Index()
         {
             //get cookie
             //string ? cookie = Request.Cookies["sessionID"];
             //authenticate user with cookie
-            Users? user = (Users)ControllerContext.HttpContext.Items["User"];
             //check if either user is null or cookie is null
-            if (user != null && !String.IsNullOrEmpty(user.UUID))
+            if (Users_Service._user != null && !String.IsNullOrEmpty(Users_Service._user.UUID))
                 return RedirectToAction("Index", "Home");
             return View();
         }
@@ -44,7 +45,7 @@ namespace FinalProject_340.Controllers
             if (newToken.registerToken())
             {
                 //if success, set the cookie so we can retrieve the login token again later
-                SetCookie("sessionID", newToken.SessionID, 99);
+                CookieServices.SetCookie("sessionID", newToken.SessionID, 99, Response);
                 return RedirectToAction("Index", "Home");
             }
             return RedirectToAction("Index", "Login");
@@ -69,17 +70,6 @@ namespace FinalProject_340.Controllers
                 EMAIL = newUser.EMAIL,
                 PASSWORD = newUser.PASSWORD
             });
-        }
-        public void SetCookie(string key, string value, int? expireTime)
-        {
-            CookieOptions option = new CookieOptions();
-
-            if (expireTime.HasValue)
-                option.Expires = DateTime.Now.AddMinutes(expireTime.Value);
-            else
-                option.Expires = DateTime.Now.AddMilliseconds(10);
-
-            Response.Cookies.Append(key, value, option);
         }
     }
 }

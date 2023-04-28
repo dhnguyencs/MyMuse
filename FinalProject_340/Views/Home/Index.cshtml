@@ -66,7 +66,7 @@
                     <button class="btn btn-outline-secondary btn-sm" id="_inputImg"> Upload Image</button>
                     <input type="file" accept=".jpg,.png" id="inputImg" style = "display: none" single />
                 </td>
-                <td colspan="1"><button class="btn btn-outline-secondary btn-sm" id="@Model.UUID">Upload</button></td>
+                <td colspan="1"><button class="btn btn-outline-secondary btn-sm" id="_uploadbtn">Upload</button></td>
             </tr>
         </tbody>
     </table>
@@ -134,7 +134,6 @@
 </style>
 
 <script>
-    let     USR_UUID        = '@Model.UUID';
     let     filename        = null;
     let     currentTrack    = document.createElement("audio");
     let     _t_status       = false;
@@ -142,7 +141,7 @@
     const   inputImg        = document.getElementById("inputImg");
     const   _inputFile      = document.getElementById("_input");
     const   _inputImg       = document.getElementById("_inputImg");
-    const   uploadBtn       = document.getElementById("@Model.UUID");
+    const   uploadBtn       = document.getElementById("_uploadbtn");
     const   _progressBar    = document.getElementById("progressBar");
     const   currentlyPlaying_text   = document.getElementById("currentlyPlaying");
     const   currentlyPlayingArt     = document.getElementById("currentPlayingArt")
@@ -178,7 +177,7 @@
         readURL(inputImg)
     }
     function reloadWindowSort(order){
-        window.location.href = `?sort=${order}`;
+        window.location.href = `/${order}`;
     }
     function readURL(input) {
       if (input.files && input.files[0]) {
