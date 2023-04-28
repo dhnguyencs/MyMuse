@@ -32,9 +32,6 @@ namespace FinalProject_340.Controllers
                 {"UUID",  (info.EMAIL + info.PASSWORD).toHash()}
             });
 
-            //Users? user = (Users)ControllerContext.HttpContext.Items["User"];
-
-
             //if user is null redirect to login page
             if (user == null) return RedirectToAction("Index", "Login");
 

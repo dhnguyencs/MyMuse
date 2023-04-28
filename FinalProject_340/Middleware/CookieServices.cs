@@ -2,7 +2,7 @@
 
 namespace FinalProject_340.Middleware
 {
-    public class CookieServices
+    public static class CookieServices
     {
         public static void SetCookie(string key, string value, int? expireTime, HttpResponse httpRes)
         {
