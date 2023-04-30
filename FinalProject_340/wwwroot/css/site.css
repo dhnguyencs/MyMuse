@@ -23,7 +23,7 @@ h1 {
 
 body {
     margin-bottom: 60px;
-    overflow: hidden;
+    overflow: scroll, hidden;
     background: #90EE90;
     background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
     background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
@@ -74,7 +74,8 @@ body {
 
 #songTable {
     max-height: 66vh;
-    overflow: scroll;
+    overflow: 
+        ;
 }
 
 .hideScrollBars {
