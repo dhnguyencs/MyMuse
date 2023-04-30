@@ -78,7 +78,11 @@
 <div class="row player player_bg">
     <div id="progressBar"></div>
     <div id="progressBar_time"></div>
-    <div id="control_btns" onclick="toggle_control_btn()"></div>
+    <div id="control_btn_group">
+        <span id="previous_btn" onclick="previousTrack()"></span>
+        <span id="play_pause_btn" onclick="toggle_control_btn()"></span>
+        <span id="next_btn" onclick="nextTrack()"></span>
+    </div>
     <div class="col">
         <div class="row">
             <div class="col" style="max-width: 80px">
@@ -100,15 +104,50 @@
     #currentPlayingArt {
         border-radius : 5px;
     }
-
-    #control_btns {
+    #control_btn_group {
         position: absolute;
+        width: 223px;
+        height: 70px;
         top: 40px;
+
+    }
+
+    #play_pause_btn {
+        display: inline-block;
         width: 70px;
         height: 70px;
         border-radius: 70px;
         background-image: url(play_btns.png);
         background-size:cover;
+        background-position-x: 0px;
+        background-repeat: repeat;
+        cursor: pointer;
+        margin-left: 10px;
+        margin-right: 10px;
+    }
+
+    #next_btn {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        border-radius: 50px;
+        top: -10px;
+        background-image: url(play_btns.png);
+        background-size: cover;
+        background-position-x: 0px;
+        background-repeat: repeat;
+        cursor: pointer;
+    }
+    #previous_btn {
+        position: relative;
+        display: inline-block;
+        width: 50px;
+        height: 50px;
+        top: -10px;
+        border-radius: 50px;
+        background-image: url(play_btns.png);
+        background-size: cover;
         background-position-x: 0px;
         background-repeat: repeat;
         cursor: pointer;
@@ -152,7 +191,7 @@
         uploadBtn.onclick = uploadTrack;
         $("#_input").click( function () { $("#input").trigger('click'); });
         $("#_inputImg").click(  function () { $("#inputImg").trigger('click'); });
-        centerWindow("control_btns");
+        centerWindow("control_btn_group");
     }
 
     currentTrack.addEventListener('timeupdate', () => {
@@ -407,3 +446,24 @@
         });
     }
 </script>
+
+ <script>
+    window.addEventListener('resize', function () {
+        centerWindow("control_btn_group");
+    });
+    function centerWindow(element_id) {
+        let w = window.innerWidth;
+        let h = window.innerHeight;
+
+        let element = document.getElementById(element_id);
+
+        let elementWidth = element.getBoundingClientRect().width;
+        let elementHeight = element.getBoundingClientRect().height;
+
+        console.log(w + " " + h + " " + elementWidth);
+
+        //element.style.top = (innerHeight * .25) + "px";
+        element.style.left = ((innerWidth - elementWidth) * .5) + "px";
+
+    }
+ </script>
