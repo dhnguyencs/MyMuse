@@ -12,6 +12,7 @@
 </div>*@
 <link rel="stylesheet" href="/css/homeView.css">
 <script src="~/js/TagReader.js"></script>
+<script src="~/js/CenterWindow.js"></script>
     <table class="table table-responsive-sm">
         <thead>
             <tr>
@@ -26,7 +27,7 @@
                 <th colspan="1"></th>
             </tr>
         </thead>
-        <tbody>
+    <tbody id="_trackTable">
         @foreach (Song song in Model.getAllTracks((int)ViewData["sort"]))
         {
             <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
@@ -45,7 +46,10 @@
                     <td colspan="2">@song.artist</td>
                     <td colspan="2">@song.album</td>
                     <td colspan="1">@song.plays</td>
-                    <td><button class="btn btn-outline-primary btn-sm" onclick="updateTrack('@song.songHash')">Edit</button>  <button class="btn btn-outline-danger btn-sm" onclick="deleteTrack('@song.songHash')">Delete</button></td>
+                    <td>
+                    <img src="~/images/edit.png" height="20" width="20" onclick="updateTrack('@song.songHash')" />
+                    <img src="~/images/delete_btn.png" height="20" width="20" onclick="deleteTrack('@song.songHash')" />
+                    </td>
                 </tr>
             }
             <tr>
@@ -92,7 +96,6 @@
         <p>Hello world</p>
     </div>
 </div>*@
-
 <style>
     #currentPlayingArt {
         border-radius : 5px;
@@ -289,6 +292,26 @@
         _t_status = true;
         currentTrack.play();
     }
+    function nextTrack() {
+        let table_rows = document.getElementById("_trackTable").rows;
+        let hash = currentTrack.id;
+        for(let i = 0; i < table_rows.length; i++){
+            if(hash == table_rows[i].id){
+                table_rows[++i].click();
+                break;
+            }
+        }
+    }
+    function previousTrack() {
+        let table_rows = document.getElementById("_trackTable").rows;
+        let hash = currentTrack.id;
+        for (let i = 0; i < table_rows.length; i++) {
+            if (hash == table_rows[i].id) {
+                table_rows[--i].click();
+                break;
+            }
+        }
+    }
 </script>
 
 <script>
@@ -382,26 +405,5 @@
                 document.getElementById(hash).remove();
             }
         });
-    }
-</script>
-
-<script>
-    window.addEventListener('resize', function(){
-        centerWindow("control_btns");
-    });
-    function centerWindow(element_id) {
-        let w = window.innerWidth;
-        let h = window.innerHeight;
-
-        let element = document.getElementById(element_id);
-
-        let elementWidth = element.getBoundingClientRect().width;
-        let elementHeight = element.getBoundingClientRect().height;
-
-        console.log(w + " " + h + " " + elementWidth);
-
-        //element.style.top = (innerHeight * .25) + "px";
-        element.style.left = ((innerWidth - elementWidth) * .5) + "px";
-
     }
 </script>
