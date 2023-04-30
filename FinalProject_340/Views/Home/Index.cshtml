@@ -65,12 +65,16 @@
                 <td colspan="1"><input id="newArtist" type="text" placeholder="Artist"/></td>
                 <td colspan="2"><input id="newAlbum" type="text" placeholder="Album" /></td>
                 <td colspan="2">
-                    <button class="btn btn-outline-secondary btn-sm" id="_input"> Upload File</button>
+                    <img src="~/images/new-document.png" height="20" width="20" id="_input"/>
+                    @*<button class="btn btn-outline-secondary btn-sm" id="_input"> Upload File</button>*@
                     <input type="file" accept=".mp3,.m4a,.wav,.ogg" id="input" style = "display: none" single />
-                    <button class="btn btn-outline-secondary btn-sm" id="_inputImg"> Upload Image</button>
+                    <img src="~/images/picture.png" height="20" width="20" id="_inputImg" />
+                    @*<button class="btn btn-outline-secondary btn-sm" id="_inputImg"> Upload Image</button>*@
                     <input type="file" accept=".jpg,.png" id="inputImg" style = "display: none" single />
                 </td>
-                <td colspan="1"><button class="btn btn-outline-secondary btn-sm" id="_uploadbtn">Upload</button></td>
+            <td colspan="1">
+                <img src="~/images/upload.png" height="20" width="20" id="_uploadbtn" />
+                    @*<button class="btn btn-outline-secondary btn-sm" id="_uploadbtn">Upload</button>*@</td>
             </tr>
         </tbody>
     </table>
