@@ -18,15 +18,21 @@ namespace FinalProject_340.Models
 
         private static Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>? _setModel;
 
-        public SqlDBConnection(string connectionString)
+        public void createConnection(string? connectionString = null)
         {
+            if (connectionString == null) return;
             _cString    = connectionString;
             _connection = new SqlConnection(_cString);
+        }
+
+        public SqlDBConnection(string? connectionString = null)
+        {
+            createConnection(connectionString);
 
             _setModel = new Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>()
             {
                 {
-                    typeof(int), 
+                    typeof(int),
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
                     {
                         int re;
@@ -35,45 +41,45 @@ namespace FinalProject_340.Models
                     }
                 },
                 {
-                    typeof(string), 
+                    typeof(string),
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
                     {
                         string ? results = (string)_reader?[prop.Name];
                         if(String.IsNullOrEmpty(results)) return;
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString(), null);
-                    } 
+                    }
                 },
                 {
-                    typeof(float), 
+                    typeof(float),
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
                         float re;
                         float.TryParse(_reader?[prop.Name].ToString(), out re);
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
-                    } 
+                    }
                 },
                 {
-                    typeof(double), 
+                    typeof(double),
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
                         double re;
                         double.TryParse(_reader?[prop.Name].ToString(), out re);
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
-                    } 
+                    }
                 },
                 {
-                    typeof(char), 
+                    typeof(char),
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
                         string ? results = (string)_reader?[prop.Name];
                         if(String.IsNullOrEmpty(results)) return;
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString()?[0], null);
-                    } 
+                    }
                 },
-                {   
-                    typeof(DateTime), 
+                {
+                    typeof(DateTime),
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
                     {
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, Convert.ToDateTime(_reader?[prop.Name].ToString()), null);
-                    } 
-                },
+                    }
+                }
             };
         }
         private String generateSqlInsertQuery(TYPE model)
@@ -224,12 +230,19 @@ namespace FinalProject_340.Models
                 }
 
             }
-
-            _connection.Open();
-            int re = newCommand.ExecuteNonQuery();
-            _connection.Close();
-            if (re == 0) return false;
-            return true;
+            try
+            {
+                _connection.Open();
+                int re = newCommand.ExecuteNonQuery();
+                _connection.Close();
+                if (re == 0) return false;
+                return true;
+            }
+            catch(Exception ex)
+            {
+                System.Console.WriteLine(ex.Message);
+                return false;
+            }
         }
         private String generateConditionals(String incompleteSqllQuery, Dictionary<string, string> conditions)
         {
@@ -277,7 +290,8 @@ namespace FinalProject_340.Models
                         }
                         catch (Exception e)
                         {
-                            System.Console.WriteLine(e);
+                            System.Console.WriteLine(e.Message);
+                            continue;
                         }
                     }
                     list.Add(newEntry);
