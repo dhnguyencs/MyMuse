@@ -121,7 +121,7 @@
         width: 70px;
         height: 70px;
         border-radius: 70px;
-        background-image: url(play-button.png);
+        background-image: url(new-play-btnsV2.png);
         @*background-image: url(play_btns.png);*@
         background-size:cover;
         background-position-x: 0px;
@@ -317,6 +317,7 @@
             currentlyPlaying_text.innerText = title + " \n " + artist + "\n" + album;
             currentlyPlayingArt.src = `/resources/@Model.UUID/art/${songHash}500x500.jpg`;
             resumeTrack();
+            document.getElementById("play_pause_btn").style.setProperty("background-position-x", `0px`);
         }else{
             toggle_control_btn();
         }
@@ -324,10 +325,10 @@
     function toggle_control_btn(){
         if (_t_status) {
             pauseTrack();
-            document.getElementById("control_btns").style.setProperty("background-position-x", `-89px` );
+            document.getElementById("play_pause_btn").style.setProperty("background-position-x", `-89px` );
         } else {
             resumeTrack();
-            document.getElementById("control_btns").style.setProperty("background-position-x", `0px`);
+            document.getElementById("play_pause_btn").style.setProperty("background-position-x", `0px`);
         }
     }
     function pauseTrack() {

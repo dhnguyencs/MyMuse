@@ -11,14 +11,8 @@ namespace FinalProject_340.Controllers
         [HttpPost]
         public IActionResult uploadTrack([FromForm] _n_song song)
         {
-            //if (!ModelState.IsValid) return Json(false);
             using (var stream = song.formFile.OpenReadStream())
             {
-                //get cookie from request if any
-                //string? cookieValueFromReq = Request.Cookies["SessionID"];
-                //get user with cookie
-                //if either cookie or user is null, redirect to the login page instead
-                //if (cookieValueFromReq == null || user == null) return RedirectToAction("Index", "Login");
                 var tagFile = TagLib.File.Create(new GenericAudioStream(song.formFile.FileName, stream));
                 string MiemeType = tagFile.MimeType.ToLower();
                 if (
@@ -43,7 +37,7 @@ namespace FinalProject_340.Controllers
                 return Json(Users_Service._user.AddSong(
                     new Song()
                         {
-                            USR_UUID    = Users_Service._user.UUID                                             ,
+                            USR_UUID    = Users_Service._user.UUID                              ,
                             title       = song.title                                            ,
                             artist      = song.artist                                           ,
                             album       = song.album                                            ,
