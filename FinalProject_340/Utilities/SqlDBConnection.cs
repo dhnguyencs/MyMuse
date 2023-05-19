@@ -1,27 +1,27 @@
 ﻿using Microsoft.Data.SqlClient;
 using System.Reflection;
 
-namespace FinalProject_340.Models
+namespace FinalProject_340.Utilities
 {
-    public class SqlDBConnection<TYPE> where TYPE : new() 
+    public class SqlDBConnection<TYPE> where TYPE : new()
     {
-        private String          _cString;
-        private SqlConnection   _connection;
-        private SqlDataReader?  _reader;
+        private string _cString;
+        private SqlConnection _connection;
+        private SqlDataReader? _reader;
 
-        private String          _tableName  = typeof(TYPE).Name;
-        private PropertyInfo[]  _props      = typeof(TYPE).GetProperties();
-        private Type            _typeDef    = typeof(TYPE);
+        private string _tableName = typeof(TYPE).Name;
+        private PropertyInfo[] _props = typeof(TYPE).GetProperties();
+        private Type _typeDef = typeof(TYPE);
 
-        private delegate void   __VOID__PROP_INFO__TYPE__Type       (PropertyInfo info, TYPE model, Type _typeDef);
-        private delegate bool   __BOOL__PROP_INFO__TYPE             (PropertyInfo info, TYPE model);
+        private delegate void __VOID__PROP_INFO__TYPE__Type(PropertyInfo info, TYPE model, Type _typeDef);
+        private delegate bool __BOOL__PROP_INFO__TYPE(PropertyInfo info, TYPE model);
 
         private static Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>? _setModel;
 
         public void createConnection(string? connectionString = null)
         {
             if (connectionString == null) return;
-            _cString    = connectionString;
+            _cString = connectionString;
             _connection = new SqlConnection(_cString);
         }
 
@@ -37,7 +37,7 @@ namespace FinalProject_340.Models
                     {
                         int re;
                         int.TryParse(_reader?[prop.Name].ToString(), out re);
-                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, (int)re, null);
+                        _typeDef.GetProperty(prop.Name)?.SetValue(newModel, re, null);
                     }
                 },
                 {
@@ -45,7 +45,7 @@ namespace FinalProject_340.Models
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef)
                     {
                         string ? results = (string)_reader?[prop.Name];
-                        if(String.IsNullOrEmpty(results)) return;
+                        if(string.IsNullOrEmpty(results)) return;
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString(), null);
                     }
                 },
@@ -69,7 +69,7 @@ namespace FinalProject_340.Models
                     typeof(char),
                     delegate(PropertyInfo prop, TYPE newModel, Type _typeDef){
                         string ? results = (string)_reader?[prop.Name];
-                        if(String.IsNullOrEmpty(results)) return;
+                        if(string.IsNullOrEmpty(results)) return;
                         _typeDef.GetProperty(prop.Name)?.SetValue(newModel, results?.ToString()?[0], null);
                     }
                 },
@@ -82,9 +82,9 @@ namespace FinalProject_340.Models
                 }
             };
         }
-        private String generateSqlInsertQuery(TYPE model)
+        private string generateSqlInsertQuery(TYPE model)
         {
-            String newSqlQuery = "insert into " + _tableName + " (";
+            string newSqlQuery = "insert into " + _tableName + " (";
 
             foreach (PropertyInfo prop in _props)
             {
@@ -107,14 +107,14 @@ namespace FinalProject_340.Models
             }
             newSqlQuery = newSqlQuery.Substring(0, newSqlQuery.Length - 2);
             newSqlQuery += " )";
-            System.Console.WriteLine(newSqlQuery);
+            Console.WriteLine(newSqlQuery);
             return newSqlQuery;
         }
         private SqlCommand createInsertSqlCommand(TYPE model)
         {
             //create a new query based on the model ie -- insert into table () values ()
-            String newSqlQuery = generateSqlInsertQuery(model);
-            
+            string newSqlQuery = generateSqlInsertQuery(model);
+
             //Instantiate new SqlCommand class using the sql query and connection
             SqlCommand sqlCommand = new SqlCommand(newSqlQuery, _connection);
 
@@ -122,7 +122,7 @@ namespace FinalProject_340.Models
             foreach (PropertyInfo prop in _props)
             {
                 var results = getValue(prop.Name, model);
-                if(results != null) 
+                if (results != null)
                     sqlCommand.Parameters.AddWithValue("@" + prop.Name, results.typeB?.ToString());
             }
 
@@ -131,10 +131,10 @@ namespace FinalProject_340.Models
         public int insertList(List<TYPE> list)
         {
             int failed = 0;
-            
-            foreach(TYPE item in list)
+
+            foreach (TYPE item in list)
                 failed = insertIntoTable(item) ? failed : failed++;
-            
+
             return failed;
         }
         public bool insertIntoTable(TYPE newModel)
@@ -145,18 +145,18 @@ namespace FinalProject_340.Models
                 _connection.Open();
                 int i = newSqlCommand.ExecuteNonQuery();
             }
-            catch(Exception e)
+            catch (Exception e)
             {
                 _connection.Close();
-                System.Console.WriteLine(e);
+                Console.WriteLine(e);
                 return false;
             }
             _connection.Close();
             return true;
         }
-        private String createRawSqlUpdate(TYPE model, Dictionary<string, string> conditions)
+        private string createRawSqlUpdate(TYPE model, Dictionary<string, string> conditions)
         {
-            String sqlRaw = "update " + _tableName + " set ";
+            string sqlRaw = "update " + _tableName + " set ";
             foreach (PropertyInfo prop in _props)
             {
                 var results = getValue(prop.Name, model);
@@ -177,9 +177,9 @@ namespace FinalProject_340.Models
             sqlRaw = sqlRaw.Substring(0, sqlRaw.Length - 4) + " ";
             return sqlRaw;
         }
-        private String createRawSqlDelete(Dictionary<string, string> conditions)
+        private string createRawSqlDelete(Dictionary<string, string> conditions)
         {
-            String sqlRaw = "delete from " + _tableName + " where ";
+            string sqlRaw = "delete from " + _tableName + " where ";
             foreach (PropertyInfo prop in _props)
             {
                 if (conditions.ContainsKey(prop.Name.ToLower()))
@@ -195,7 +195,7 @@ namespace FinalProject_340.Models
             if (conditions.Count == 0) return false;
 
             conditions = conditions.toLowerCaseKey();
-            String sqlRaw = createRawSqlDelete(conditions);
+            string sqlRaw = createRawSqlDelete(conditions);
             SqlCommand newCommand = new SqlCommand(sqlRaw, _connection);
             foreach (PropertyInfo prop in _props)
             {
@@ -215,9 +215,9 @@ namespace FinalProject_340.Models
             if (conditions.Count == 0) return false;
 
             conditions = conditions.toLowerCaseKey();
-            String sqlRaw = createRawSqlUpdate(model, conditions);
+            string sqlRaw = createRawSqlUpdate(model, conditions);
             SqlCommand newCommand = new SqlCommand(sqlRaw, _connection);
-            foreach(PropertyInfo prop in _props)
+            foreach (PropertyInfo prop in _props)
             {
                 var results = getValue(prop.Name, model);
                 if (results != null)
@@ -238,13 +238,13 @@ namespace FinalProject_340.Models
                 if (re == 0) return false;
                 return true;
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-                System.Console.WriteLine(ex.Message);
+                Console.WriteLine(ex.Message);
                 return false;
             }
         }
-        private String generateConditionals(String incompleteSqllQuery, Dictionary<string, string> conditions)
+        private string generateConditionals(string incompleteSqllQuery, Dictionary<string, string> conditions)
         {
             conditions = conditions.toLowerCaseKey();
             bool f = false;
@@ -265,21 +265,21 @@ namespace FinalProject_340.Models
         }
         public List<TYPE> getList(Dictionary<string, string> conditions, int topX)
         {
-            string _topX = ""; 
-            if(topX != 0)
+            string _topX = "";
+            if (topX != 0)
             {
                 _topX += "top (" + topX.ToString() + ")";
             }
             List<TYPE> list = new List<TYPE>();
-            String newSqlQuery = "Select " + _topX.ToString() + "* from " + _tableName;
+            string newSqlQuery = "Select " + _topX.ToString() + "* from " + _tableName;
             newSqlQuery = generateConditionals(newSqlQuery, conditions);
             try
             {
                 _connection.Open();
                 SqlCommand newSqlCommand = new SqlCommand(newSqlQuery, _connection);
                 _reader = newSqlCommand.ExecuteReader();
-                
-                for (int i = 0; _reader.Read() && (i <= topX+1); i++)
+
+                for (int i = 0; _reader.Read() && i <= topX + 1; i++)
                 {
                     TYPE newEntry = new TYPE();
                     foreach (PropertyInfo prop in _props)
@@ -290,34 +290,37 @@ namespace FinalProject_340.Models
                         }
                         catch (Exception e)
                         {
-                            System.Console.WriteLine(e.Message);
+                            Console.WriteLine(e.Message);
                             continue;
                         }
                     }
                     list.Add(newEntry);
                 }
                 _connection.Close();
-            }catch(Exception e)
+            }
+            catch (Exception e)
             {
-                System.Console.WriteLine(e.Message);
+                Console.WriteLine(e.Message);
             }
             return list;
         }
-        public TYPE? getFirstOrDefault(Dictionary<string, string> conditions) {
+        public TYPE? getFirstOrDefault(Dictionary<string, string> conditions)
+        {
             List<TYPE> re = getList(conditions, 1);
-            return re.Count > 0 ? re[0] : default(TYPE);
+            return re.Count > 0 ? re[0] : default;
         }
         public List<TYPE> getList(Dictionary<string, string> conditions) { return getList(conditions, 10); }
         private void setModel(PropertyInfo prop, TYPE newModel, SqlDataReader _reader)
         {
             _setModel[prop.PropertyType](prop, newModel, _typeDef);
         }
-        private Vector2D<Type, Object>? getValue(String Name, TYPE model) {
-            Object ? results = model?.GetType().GetProperty(Name)?.GetValue(model);
+        private Vector2D<Type, object>? getValue(string Name, TYPE model)
+        {
+            object? results = model?.GetType().GetProperty(Name)?.GetValue(model);
             if (results != null && !string.IsNullOrEmpty(results.ToString()))
             {
-                Type ? typeOfVar = _typeDef.GetProperty(Name)?.GetValue(model)?.GetType();
-                return new Vector2D<Type, Object> { type = typeOfVar, typeB = typeof(TYPE)?.GetProperty(Name)?.GetValue(model) };
+                Type? typeOfVar = _typeDef.GetProperty(Name)?.GetValue(model)?.GetType();
+                return new Vector2D<Type, object> { type = typeOfVar, typeB = typeof(TYPE)?.GetProperty(Name)?.GetValue(model) };
             }
             return null;
         }

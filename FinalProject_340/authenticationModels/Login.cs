@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FinalProject_340.Models;
 
 namespace FinalProject_340.Models
 {

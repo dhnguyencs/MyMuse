@@ -1,9 +1,10 @@
 ﻿using Microsoft.Data.SqlClient;
-using FinalProject_340;
 using System.Net;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
+using FinalProject_340.Utilities;
 using Azure.Core;
+using FinalProject_340.Models;
 
 namespace FinalProject_340.Models
 {
@@ -25,7 +26,7 @@ namespace FinalProject_340.Models
 
         private Dictionary<string, string> _listSet = new Dictionary<string, string>();
 
-        SqlDBConnection<Song> sqlDB_tracks = new SqlDBConnection<Song>(FinalProject_340.Properties.Resource.appData);
+        SqlDBConnection<Song> sqlDB_tracks = new SqlDBConnection<Song>(Properties.Resource.appData);
 
         public Users() { }
         public Users(string EMAIL, string PASSWORD)
@@ -34,7 +35,7 @@ namespace FinalProject_340.Models
         }
         public Users(string _EMAIL, string FIRSTNAME, string LASTNAME, string _PASSWORD)
         {
-            FIRST_NAME  = FIRSTNAME; 
+            FIRST_NAME  = FIRSTNAME;
             LAST_NAME   = LASTNAME;
             EMAIL       = _EMAIL;
             UUID        = (_EMAIL + _PASSWORD).toHash();
@@ -55,7 +56,7 @@ namespace FinalProject_340.Models
                     "SongHash", song.songHash
                 },
                 {
-                    "USR_UUID", this.UUID
+                    "USR_UUID", UUID
                 }
             });
             return true;
@@ -64,10 +65,10 @@ namespace FinalProject_340.Models
         {
             List<Song> songs = sqlDB_tracks.getList(new Dictionary<string, string>() {
                 {
-                    "USR_UUID", this.UUID
+                    "USR_UUID", UUID
                 }
             }, 9999);
-            if(order == 1)
+            if (order == 1)
                 songs.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
             if (order == 2)
                 songs.Sort((x, y) => x.songLength.CompareTo(y.songLength));
@@ -87,7 +88,7 @@ namespace FinalProject_340.Models
                     "songHash", hash
                 },
                 {
-                    "USR_UUID", this.UUID
+                    "USR_UUID", UUID
                 }
             });
         }
@@ -99,15 +100,9 @@ namespace FinalProject_340.Models
                     "songHash", hash
                 },
                 {
-                    "USR_UUID", this.UUID
+                    "USR_UUID", UUID
                 }
             });
-        }
-        public bool isNullOrEmpty()
-        {
-            if(FIRST_NAME.IsNullOrEmpty() || LAST_NAME.IsNullOrEmpty() || EMAIL.IsNullOrEmpty() || UUID.IsNullOrEmpty())
-                return false;
-            return true;
         }
     }
 }

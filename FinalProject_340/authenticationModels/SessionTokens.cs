@@ -1,11 +1,14 @@
-﻿namespace FinalProject_340.Models
+﻿using FinalProject_340.Utilities;
+using FinalProject_340.Models;
+
+namespace FinalProject_340.Models
 {
     public class SessionTokens
     {
         public static SessionTokens? getToken(string cookie)
         {
-            if (string.IsNullOrEmpty(cookie)) return (SessionTokens?)null;
-            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>(FinalProject_340.Properties.Resource.appData);
+            if (string.IsNullOrEmpty(cookie)) return null;
+            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>(Properties.Resource.appData);
             SessionTokens? newToken = newConnection.getFirstOrDefault(new Dictionary<string, string>()
             {
                 {"SessionID", cookie }
@@ -19,11 +22,11 @@
         public SessionTokens(string? UUID)
         {
             SessionID = (UUID + DateTime.Now.ToString()).toHash();
-            this.accountHash = UUID;
+            accountHash = UUID;
         }
         public bool registerToken()
         {
-            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>(FinalProject_340.Properties.Resource.appData);
+            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>(Properties.Resource.appData);
             return newConnection.insertIntoTable(this);
         }
     }

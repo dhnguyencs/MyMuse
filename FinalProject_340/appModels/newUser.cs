@@ -1,4 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using FinalProject_340.Utilities;
+using FinalProject_340.Models;
 
 namespace FinalProject_340.Models
 {
@@ -15,24 +17,24 @@ namespace FinalProject_340.Models
         {
             //basic checks
             if (
-                this.EMAIL          == null || this.FIRST_NAME == null || 
-                this.EMAIL          == null || this.PASSWORD   == null ||
-                this.PASSWORDCNF    == null || this.PASSWORD   != this.PASSWORDCNF
+                EMAIL == null || FIRST_NAME == null ||
+                EMAIL == null || PASSWORD == null ||
+                PASSWORDCNF == null || PASSWORD != PASSWORDCNF
                 ) return false;
-            
+
             /*create a SqlDBConnection object modeling the Users table in the database, 
               using the connection string found in the resource file*/
-            SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(FinalProject_340.Properties.Resource.appData);
+            SqlDBConnection<Users> newConnection = new SqlDBConnection<Users>(Properties.Resource.appData);
             //Create a new user with the required data
-            Users newUser = new Users(this.EMAIL, this.FIRST_NAME, this.LAST_NAME, this.PASSWORD);
+            Users newUser = new Users(EMAIL, FIRST_NAME, LAST_NAME, PASSWORD);
             //return the results of function insertIntoTable from the Sql object
             return newConnection.insertIntoTable(newUser);
         }
 
         override
-        public String ToString()
+        public string ToString()
         {
-            return this.FIRST_NAME + " " + this.LAST_NAME + " " + this.EMAIL + " " + this.PASSWORD;
+            return FIRST_NAME + " " + LAST_NAME + " " + EMAIL + " " + PASSWORD;
         }
     }
 }

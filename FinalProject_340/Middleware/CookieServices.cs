@@ -1,6 +1,6 @@
 ﻿using Azure;
 
-namespace FinalProject_340.Middleware
+namespace FinalProject_340.Models
 {
     public static class CookieServices
     {

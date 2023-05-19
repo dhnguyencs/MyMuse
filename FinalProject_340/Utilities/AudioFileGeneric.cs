@@ -1,6 +1,6 @@
 ﻿using static TagLib.File;
 
-namespace FinalProject_340.Models
+namespace FinalProject_340.Utilities
 {
     public class GenericAudioStream : IFileAbstraction
     {

@@ -28,7 +28,7 @@
             </tr>
         </thead>
     <tbody id="_trackTable">
-        @foreach (Song song in Model.getAllTracks((int)ViewData["sort"]))
+        @foreach (FinalProject_340.Models.Song song in Model.getAllTracks((int)ViewData["sort"]))
         {
             <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
                 <td colspan="1">
@@ -79,7 +79,7 @@
         </tbody>
     </table>
 
-<div class="row player player_bg">
+<div class="row player player_bg unselectable">
     <div id="progressBar"></div>
     <div id="progressBar_time"></div>
     <div id="control_btn_group">
@@ -158,6 +158,15 @@
         background-position-x: 0px;
         background-repeat: repeat;
         cursor: pointer;
+    }
+
+    .unselectable {
+        -webkit-touch-callout: none;
+        -webkit-user-select: none;
+        -khtml-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
     }
     #progressBar {
         position: absolute;
@@ -303,12 +312,20 @@
     }
     function playTrack(songHash, audio){
         if(!currentTrack.id || songHash !== currentTrack.id){
+            if (currentTrack.id) {
+                var element_2 = document.getElementById(currentTrack.id);
+                element_2.style.removeProperty("background");
+                element_2.style.removeProperty("color")
+            }
+
             currentTrack.src = "/resources/@Model.UUID/songs/" + songHash + audio;
             currentTrack.id = songHash;
 
             updatePlays(songHash);
 
             var element = document.getElementById(songHash);
+            element.style.setProperty("background", "rgba(0, 0, 0, .3)");
+            element.style.setProperty("color", "rgba(255, 255, 255, 1)");
             var cells   = element.cells;
             let title   = cells[1].innerText;
             let artist  = cells[3].innerText;

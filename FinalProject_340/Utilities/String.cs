@@ -5,7 +5,7 @@ namespace FinalProject_340.Models
 {
     public static class Crytpography
     {
-        public static String toHash(this string rawData)
+        public static string toHash(this string rawData)
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
@@ -21,7 +21,7 @@ namespace FinalProject_340.Models
                 return builder.ToString();
             }
         }
-        public static String removeLastChar(this string rawData)
+        public static string removeLastChar(this string rawData)
         {
             return rawData.Substring(rawData.Length - 2);
         }

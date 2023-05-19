@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Content Include="appModels\newSong.cs" />
+    <Content Include="appModels\newUser.cs" />
+    <Content Include="appModels\song.cs" />
+    <Content Include="appModels\User.cs" />
     <Content Include="Controllers\apiController.cs" />
     <Content Include="Controllers\HomeController.cs" />
     <Content Include="Controllers\LoginController.cs" />

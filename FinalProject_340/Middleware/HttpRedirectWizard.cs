@@ -28,6 +28,11 @@ namespace FinalProject_340.Middleware
             }
             Users? user = Users_Service.getUser(cookieValueFromReq);
             //3rd check: if user is null after attempting to grab their information using the provided cookie from request, we redirect them to the login page
+            if (user == null && Paths == "/login/index")
+            {
+                await this._next(context);
+                return;
+            }
             if ((user == null && Paths != "/login/login")
                 || (user != null && Paths == "/login/createaccount"))
             {
