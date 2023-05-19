@@ -1,6 +1,5 @@
 ﻿using FinalProject_340.Middleware;
 using FinalProject_340.Models;
-using FinalProject_340.Tests;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
