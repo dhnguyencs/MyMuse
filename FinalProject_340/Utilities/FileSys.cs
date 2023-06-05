@@ -45,5 +45,25 @@ namespace FinalProject_340.Utilities
             // Return the file name
             return 0;
         }
+        public static int SaveFile(IFormFile file, string folderPath, string fileName)
+        {
+            // If directory does not exist, create it
+            if (!Directory.Exists(folderPath))
+            {
+                Directory.CreateDirectory(folderPath);
+            }
+            // Combine the folder path and the file name to get the full file path
+            var filePath = Path.Combine(folderPath, fileName);
+
+            // Open a FileStream object to write the file to disk
+            using (var stream = new FileStream(filePath, FileMode.Create))
+            {
+                // Copy the contents of the uploaded file to the FileStream
+                file.CopyTo(stream);
+            }
+
+            // Return the file name
+            return 0;
+        }
     }
 }

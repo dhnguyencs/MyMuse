@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using FinalProject_340.Utilities;
 using Azure.Core;
 using FinalProject_340.Models;
+using Microsoft.AspNetCore.Html;
 
 namespace FinalProject_340.Models
 {
@@ -68,16 +69,11 @@ namespace FinalProject_340.Models
                     "USR_UUID", UUID
                 }
             }, 9999);
-            if (order == 1)
-                songs.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
-            if (order == 2)
-                songs.Sort((x, y) => x.songLength.CompareTo(y.songLength));
-            if (order == 3)
-                songs.Sort((x, y) => x.artist.ToLower().CompareTo(y.artist.ToLower()));
-            if (order == 4)
-                songs.Sort((x, y) => x.album.ToLower().CompareTo(y.album.ToLower()));
-            if (order == 5)
-                songs.Sort((x, y) => x.plays.CompareTo(y.plays));
+            if (order == 1) songs.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
+            if (order == 2) songs.Sort((x, y) => x.songLength.CompareTo(y.songLength));
+            if (order == 3) songs.Sort((x, y) => x.artist.ToLower().CompareTo(y.artist.ToLower()));
+            if (order == 4) songs.Sort((x, y) => x.album.ToLower().CompareTo(y.album.ToLower()));
+            if (order == 5) songs.Sort((x, y) => x.plays.CompareTo(y.plays));
             return songs;
         }
         public Song getTrack(string hash)
@@ -103,6 +99,13 @@ namespace FinalProject_340.Models
                     "USR_UUID", UUID
                 }
             });
+        }
+        public HtmlString getBackGround()
+        {
+            if(!File.Exists("wwwroot/resources/" + UUID + "/background.jpg")){
+                return new HtmlString("background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");\r\n        background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");");
+            }
+            return new HtmlString("background: url(" + "/resources/" + UUID + "/background.jpg);");
         }
     }
 }

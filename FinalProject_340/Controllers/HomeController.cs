@@ -22,12 +22,20 @@ namespace FinalProject_340.Controllers
         [Route("/{Action=Index}/{sort?}")]
         [Route("/{Controller=Home}/{Action=Index}/{sort?}")]
         [Route("/{sort?}")]
-        public IActionResult Index(int sort)
+        public IActionResult Index(int sort = 0)
         {
-            if (!Request.Cookies.ContainsKey("sort"))
-                ViewData["sort"] = 1;
-            if(sort != 0)
+            if (sort != 0)
+            {
+                CookieServices.SetCookie("sort", sort.ToString(), 9999, Response);
                 ViewData["sort"] = sort;
+            }
+            if (sort == 0 && !Request.Cookies["sort"].IsNullOrEmpty())
+            {
+                int.TryParse(Request.Cookies["sort"], out sort);
+                ViewData["sort"] = sort;
+            }
+            else if(sort == 0) ViewData["sort"] = 1;
+
             return View(Users_Service._user);
         }
 

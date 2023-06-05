@@ -21,15 +21,6 @@ h1 {
     color: darkblue; /*font color for text*/
 }
 
-body {
-    margin-bottom: 60px;
-    overflow: scroll, hidden;
-    background: #90EE90;
-    background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
-    background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url("../images/hd-wallpaper-3833973_640.jpg");
-    background-size: cover;
-}
-
 .form-group {
     text-align: left;
     font-size: 25px;

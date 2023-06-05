@@ -4,12 +4,6 @@
     ViewData["Title"] = "Title";
     ViewData["Name"] = "Name";
 }
-
-@*<div class="text-left">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-    <p>Hello @Model._fName @Model._lName</p>
-</div>*@
 <link rel="stylesheet" href="/css/homeView.css">
 <script src="~/js/TagReader.js"></script>
 <script src="~/js/CenterWindow.js"></script>
@@ -98,12 +92,10 @@
         </div>
     </div>
 </div>
-@*<progress id="progressBar" class="abs_b_0" value="0" max="100"></progress>*@
-@*<div id="_con">
-    <div class="popup"
-        <p>Hello world</p>
-    </div>
-</div>*@
+<form asp-controller="api" asp-action="uploadBackground" enctype="multipart/form-data">
+    <input type="file" name="file" accept=".jpg" />
+    <button type="submit">Upload</button>
+</form>
 <style>
     #currentPlayingArt {
         border-radius : 5px;
@@ -189,6 +181,15 @@
         left: 0px;
         color: rgb(200, 200, 200);
     }
+
+    body {
+        height: 100%;
+        margin-bottom: 6px;
+        overflow: scroll, hidden;
+        background: #90EE90;
+        @Model.getBackGround();
+        background-size:cover;
+    }    
 </style>
 
 <script>
@@ -492,8 +493,3 @@
 
     }
  </script>
-
-<form asp-action="Upload" enctype="multipart/form-data">
-    <input type="file" name="file" />
-    <button type="submit">Upload</button>
-</form>

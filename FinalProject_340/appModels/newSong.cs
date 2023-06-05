@@ -25,13 +25,13 @@ namespace FinalProject_340.Models
 
         public int duration { get; set; }
 
-        public string MiemeType = "";
-        public string FTYPE = "";
+        private string MiemeType = "";
+        private string FTYPE = "";
         public void setProps()
         {
-            using (var stream = formFile.OpenReadStream())
+            using (Stream stream = formFile.OpenReadStream())
             {
-                var tagFile = TagLib.File.Create(new GenericAudioStream(formFile.FileName, stream));
+                TagLib.File tagFile = TagLib.File.Create(new GenericAudioStream(formFile.FileName, stream));
                 MiemeType = tagFile.MimeType.ToLower();
                 if (MiemeType.Contains("mp3")) FTYPE = ".mp3";
                 if (MiemeType.Contains("ogg")) FTYPE = ".ogg";

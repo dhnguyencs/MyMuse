@@ -5,13 +5,13 @@ namespace FinalProject_340.Utilities
 {
     public class SqlDBConnection<TYPE> where TYPE : new()
     {
-        private string _cString;
-        private SqlConnection _connection;
-        private SqlDataReader? _reader;
+        private string              _cString;
+        private SqlConnection       _connection;
+        private SqlDataReader?      _reader;
 
-        private string _tableName = typeof(TYPE).Name;
-        private PropertyInfo[] _props = typeof(TYPE).GetProperties();
-        private Type _typeDef = typeof(TYPE);
+        private string              _tableName  = typeof(TYPE).Name;
+        private PropertyInfo[]      _props      = typeof(TYPE).GetProperties();
+        private Type                _typeDef    = typeof(TYPE);
 
         private delegate void __VOID__PROP_INFO__TYPE__Type(PropertyInfo info, TYPE model, Type _typeDef);
         private delegate bool __BOOL__PROP_INFO__TYPE(PropertyInfo info, TYPE model);
@@ -220,14 +220,9 @@ namespace FinalProject_340.Utilities
             foreach (PropertyInfo prop in _props)
             {
                 var results = getValue(prop.Name, model);
-                if (results != null)
-                {
-                    newCommand.Parameters.AddWithValue("@" + prop.Name, results.typeB);
-                    if (conditions.ContainsKey(prop.Name.ToLower()))
-                    {
-                        newCommand.Parameters.AddWithValue("@" + prop.Name + "c", conditions[prop.Name.ToLower()]);
-                    }
-                }
+                if (results == null) continue;
+                newCommand.Parameters.AddWithValue("@" + prop.Name, results.typeB);
+                if (conditions.ContainsKey(prop.Name.ToLower())) newCommand.Parameters.AddWithValue("@" + prop.Name + "c", conditions[prop.Name.ToLower()]);
 
             }
             try
@@ -254,11 +249,9 @@ namespace FinalProject_340.Utilities
             }
             foreach (PropertyInfo prop in _props)
             {
-                if (conditions.ContainsKey(prop.Name.ToLower()))
-                {
-                    f = true;
-                    incompleteSqllQuery += prop.Name + " = '" + conditions[prop.Name.ToLower()] + "' and ";
-                }
+                if (!conditions.ContainsKey(prop.Name.ToLower())) continue;
+                f = true;
+                incompleteSqllQuery += prop.Name + " = '" + conditions[prop.Name.ToLower()] + "' and ";
             }
             if (f) incompleteSqllQuery = incompleteSqllQuery.Substring(0, incompleteSqllQuery.Length - 4);
             return incompleteSqllQuery;

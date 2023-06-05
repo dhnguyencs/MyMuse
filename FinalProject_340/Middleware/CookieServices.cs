@@ -8,10 +8,8 @@ namespace FinalProject_340.Models
         {
             CookieOptions option = new CookieOptions();
 
-            if (expireTime.HasValue)
-                option.Expires = DateTime.Now.AddMinutes(expireTime.Value);
-            else
-                option.Expires = DateTime.Now.AddMilliseconds(10);
+            if (expireTime.HasValue) option.Expires = DateTime.Now.AddMinutes(expireTime.Value);
+            else option.Expires = DateTime.Now.AddMilliseconds(10);
 
             httpRes.Cookies.Append(key, value, option);
         }
