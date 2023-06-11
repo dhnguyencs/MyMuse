@@ -21,11 +21,11 @@
                 <th colspan="1"></th>
             </tr>
         </thead>
-    <tbody id="_trackTable">
-        @foreach (FinalProject_340.Models.Song song in Model.getAllTracks((int)ViewData["sort"]))
-        {
-            <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
-                <td colspan="1">
+        <tbody id="_trackTable">
+            @foreach (FinalProject_340.Models.Song song in Model.getAllTracks((int)ViewData["sort"]))
+            {
+                <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
+                    <td colspan="1">
                         @if (song.checkPath(100, 100))
                         {
                             <img height="30" width="30" src='@("/resources/" + @Model.UUID + "/art/" + @song.songHash + "100x100.jpg")' />
@@ -41,38 +41,44 @@
                     <td colspan="2">@song.album</td>
                     <td colspan="1">@song.plays</td>
                     <td>
-                    <img src="~/images/edit.png" height="20" width="20" onclick="updateTrack('@song.songHash')" />
-                    <img src="~/images/delete_btn.png" height="20" width="20" onclick="deleteTrack('@song.songHash')" />
+                        <img src="~/images/edit.png" height="20" width="20" onclick="updateTrack('@song.songHash')" />
+                        <img src="~/images/delete_btn.png" height="20" width="20" onclick="deleteTrack('@song.songHash')" />
                     </td>
                 </tr>
             }
             <tr>
                 <td colspan="1">
-    @*                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-arrow-up" viewBox="0 0 16 16">
-                        <path d="M8 11a.5.5 0 0 0 .5-.5V6.707l1.146 1.147a.5.5 0 0 0 .708-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 .5.5z" />
-                        <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
+                    @*                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-file-arrow-up" viewBox="0 0 16 16">
+                    <path d="M8 11a.5.5 0 0 0 .5-.5V6.707l1.146 1.147a.5.5 0 0 0 .708-.708l-2-2a.5.5 0 0 0-.708 0l-2 2a.5.5 0 1 0 .708.708L7.5 6.707V10.5a.5.5 0 0 0 .5.5z" />
+                    <path d="M4 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H4zm0 1h8a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1z" />
                     </svg>*@
                     <img id="img-prev" src="" />
                 </td>
                 <td class="text-end">&nbsp;</td>
                 <td colspan="10"><input id="newTitle" type="text" placeholder="Title" /></td>
-                <td colspan="1"><input id="newArtist" type="text" placeholder="Artist"/></td>
+                <td colspan="1"><input id="newArtist" type="text" placeholder="Artist" /></td>
                 <td colspan="2"><input id="newAlbum" type="text" placeholder="Album" /></td>
                 <td colspan="2" style="cursor:pointer">
-                    <img src="~/images/new-document.png" height="20" width="20" id="_input"/>
+                    <img src="~/images/new-document.png" height="20" width="20" id="_input" />
                     @*<button class="btn btn-outline-secondary btn-sm" id="_input"> Upload File</button>*@
-                    <input type="file" accept=".mp3,.m4a,.wav,.ogg" id="input" style = "display: none" single />
+                    <input type="file" accept=".mp3,.m4a,.wav,.ogg" id="input" style="display: none" single />
                     <img src="~/images/picture.png" height="20" width="20" id="_inputImg" />
                     @*<button class="btn btn-outline-secondary btn-sm" id="_inputImg"> Upload Image</button>*@
-                    <input type="file" accept=".jpg,.png" id="inputImg" style = "display: none" single />
+                    <input type="file" accept=".jpg,.png" id="inputImg" style="display: none" single />
                 </td>
-            <td colspan="1" style="cursor:pointer">
-                <img src="~/images/upload.png" height="20" width="20" id="_uploadbtn" />
-                    @*<button class="btn btn-outline-secondary btn-sm" id="_uploadbtn">Upload</button>*@</td>
+                <td colspan="1" style="cursor:pointer">
+                    <img src="~/images/upload.png" height="20" width="20" id="_uploadbtn" />
+                    @*<button class="btn btn-outline-secondary btn-sm" id="_uploadbtn">Upload</button>*@
+                </td>
             </tr>
         </tbody>
     </table>
-
+    <form asp-controller="api" asp-action="uploadBackground" enctype="multipart/form-data">
+        <input type="file" name="file" accept=".jpg" />
+        <button type="submit">Upload</button>
+    </form>
+<div id="backdropoverlay">
+</div>
 <div class="row player player_bg unselectable">
     <div id="progressBar"></div>
     <div id="progressBar_time"></div>
@@ -92,10 +98,6 @@
         </div>
     </div>
 </div>
-<form asp-controller="api" asp-action="uploadBackground" enctype="multipart/form-data">
-    <input type="file" name="file" accept=".jpg" />
-    <button type="submit">Upload</button>
-</form>
 <style>
     #currentPlayingArt {
         border-radius : 5px;
@@ -182,6 +184,21 @@
         color: rgb(200, 200, 200);
     }
 
+    #backdropoverlay {
+        position: fixed;
+        top:0px;
+        z-index: -10;
+        background: rgba(255, 255, 255, 0.42);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        background: rgba(255, 255, 255, 0.42);
+        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+        backdrop-filter: blur(5px);
+        -webkit-backdrop-filter: blur(5px);
+        width: 100%;
+        height: 100vh;
+    }
     body {
         height: 100%;
         margin-bottom: 6px;
