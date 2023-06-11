@@ -41,19 +41,19 @@ namespace FinalProject_340.Utilities
 
             return lo_case_conditions;
         }
-        private string _cString;
-        private SqlConnection _connection;
-        private SqlDataReader? _reader;
+        private string                  _cString;
+        private SqlConnection           _connection;
+        private SqlDataReader?          _reader;
 
-        private string _tableName = typeof(TYPE).Name;
-        private PropertyInfo[] _props = typeof(TYPE).GetProperties();
-        private Type _typeDef = typeof(TYPE);
+        private string _tableName       = typeof(TYPE).Name;
+        private PropertyInfo[] _props   = typeof(TYPE).GetProperties();
+        private Type _typeDef           = typeof(TYPE);
 
-        private delegate void __VOID__PROP_INFO__TYPE__Type(PropertyInfo info, TYPE model, Type _typeDef);
-        private delegate bool __BOOL__PROP_INFO__TYPE(PropertyInfo info, TYPE model);
+        private delegate void __VOID__PROP_INFO__TYPE__Type (PropertyInfo info, TYPE model, Type _typeDef);
+        private delegate bool __BOOL__PROP_INFO__TYPE       (PropertyInfo info, TYPE model               );
 
         private static Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>? _setModel;
-        private static Dictionary<Type, string>? _CSHARP_TYPES_TO_SQL_TYPES;
+        private static Dictionary<Type, String>?                        _CSHARP_TYPES_TO_SQL_TYPES;
 
         public string getTableName() { return _tableName; }
 
