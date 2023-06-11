@@ -17,7 +17,7 @@ namespace FinalProject_340.Controllers
         {
             _logger = logger;
         }
-        [Route("")]
+        [Route("/")]
         [Route("/{Controller=Home}/{sort?}")]
         [Route("/{Action=Index}/{sort?}")]
         [Route("/{Controller=Home}/{Action=Index}/{sort?}")]

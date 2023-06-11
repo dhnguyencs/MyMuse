@@ -5,18 +5,57 @@ namespace FinalProject_340.Utilities
 {
     public class SqlDBConnection<TYPE> where TYPE : new()
     {
-        private string              _cString;
-        private SqlConnection       _connection;
-        private SqlDataReader?      _reader;
+        public static bool createDatabase(string databaseName, string _connection_string)
+        {
+            using (SqlConnection connection = new SqlConnection(_connection_string))
+            {
+                string createDatabaseQuery = $"CREATE DATABASE {databaseName}";
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(createDatabaseQuery, connection))
+                {
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch
+                    {
+                        connection.Close();
+                        return false;
+                    }
+                    connection.Close();
+                    return true;
+                }
+            }
+        }
+        private class Vector2D<TYPE_A, TYPE_B>
+        {
+            public TYPE_A? type { get; set; }
+            public TYPE_B? typeB { get; set; }
+        }
+        private static Dictionary<string, string> toLowerCaseKey(Dictionary<string, string> thisDict)
+        {
+            Dictionary<string, string> lo_case_conditions = new Dictionary<string, string>();
 
-        private string              _tableName  = typeof(TYPE).Name;
-        private PropertyInfo[]      _props      = typeof(TYPE).GetProperties();
-        private Type                _typeDef    = typeof(TYPE);
+            foreach (string condition in thisDict.Keys)
+                lo_case_conditions.Add(condition.ToLower(), thisDict[condition]);
+
+            return lo_case_conditions;
+        }
+        private string _cString;
+        private SqlConnection _connection;
+        private SqlDataReader? _reader;
+
+        private string _tableName = typeof(TYPE).Name;
+        private PropertyInfo[] _props = typeof(TYPE).GetProperties();
+        private Type _typeDef = typeof(TYPE);
 
         private delegate void __VOID__PROP_INFO__TYPE__Type(PropertyInfo info, TYPE model, Type _typeDef);
         private delegate bool __BOOL__PROP_INFO__TYPE(PropertyInfo info, TYPE model);
 
         private static Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>? _setModel;
+        private static Dictionary<Type, string>? _CSHARP_TYPES_TO_SQL_TYPES;
+
+        public string getTableName() { return _tableName; }
 
         public void createConnection(string? connectionString = null)
         {
@@ -28,6 +67,16 @@ namespace FinalProject_340.Utilities
         public SqlDBConnection(string? connectionString = null)
         {
             createConnection(connectionString);
+
+            _CSHARP_TYPES_TO_SQL_TYPES = new Dictionary<Type, string>()
+            {
+                { typeof(int), "INT" }, { typeof(int?), "INT" }, { typeof(long), "BIGINT" }, { typeof(long?), "BIGINT" },
+                { typeof(short), "SHORT" }, { typeof(short?), "short" }, { typeof(byte), "TINYINT" }, { typeof(byte?), "TINYINT" },
+                { typeof(float), "REAL" }, { typeof(float?), "REAL" }, { typeof(double), "FLOAT" }, { typeof(double?), "FLOAT" },
+                { typeof(decimal), "DECIMAL" }, { typeof(decimal?), "DECIMAL" }, { typeof(bool), "BIT" }, { typeof(bool?), "BIT" },
+                { typeof(char), "CHAR" }, { typeof(char?), "CHAR" }, { typeof(string), "VARCHAR(4096)" },
+                { typeof(DateTime), "DATETIME" }, { typeof(DateTime?), "DATETIME" }
+            };
 
             _setModel = new Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>()
             {
@@ -84,7 +133,7 @@ namespace FinalProject_340.Utilities
         }
         private string generateSqlInsertQuery(TYPE model)
         {
-            string newSqlQuery = "insert into " + _tableName + " (";
+            string newSqlQuery = "insert into [" + _tableName + "] (";
 
             foreach (PropertyInfo prop in _props)
             {
@@ -156,7 +205,7 @@ namespace FinalProject_340.Utilities
         }
         private string createRawSqlUpdate(TYPE model, Dictionary<string, string> conditions)
         {
-            string sqlRaw = "update " + _tableName + " set ";
+            string sqlRaw = "update [" + _tableName + "] set ";
             foreach (PropertyInfo prop in _props)
             {
                 var results = getValue(prop.Name, model);
@@ -179,7 +228,7 @@ namespace FinalProject_340.Utilities
         }
         private string createRawSqlDelete(Dictionary<string, string> conditions)
         {
-            string sqlRaw = "delete from " + _tableName + " where ";
+            string sqlRaw = "delete from [" + _tableName + "] where ";
             foreach (PropertyInfo prop in _props)
             {
                 if (conditions.ContainsKey(prop.Name.ToLower()))
@@ -194,7 +243,7 @@ namespace FinalProject_340.Utilities
         {
             if (conditions.Count == 0) return false;
 
-            conditions = conditions.toLowerCaseKey();
+            conditions = toLowerCaseKey(conditions);
             string sqlRaw = createRawSqlDelete(conditions);
             SqlCommand newCommand = new SqlCommand(sqlRaw, _connection);
             foreach (PropertyInfo prop in _props)
@@ -214,7 +263,7 @@ namespace FinalProject_340.Utilities
         {
             if (conditions.Count == 0) return false;
 
-            conditions = conditions.toLowerCaseKey();
+            conditions = toLowerCaseKey(conditions);
             string sqlRaw = createRawSqlUpdate(model, conditions);
             SqlCommand newCommand = new SqlCommand(sqlRaw, _connection);
             foreach (PropertyInfo prop in _props)
@@ -241,7 +290,7 @@ namespace FinalProject_340.Utilities
         }
         private string generateConditionals(string incompleteSqllQuery, Dictionary<string, string> conditions)
         {
-            conditions = conditions.toLowerCaseKey();
+            conditions = toLowerCaseKey(conditions);
             bool f = false;
             if (conditions.Count > 0)
             {
@@ -264,7 +313,7 @@ namespace FinalProject_340.Utilities
                 _topX += "top (" + topX.ToString() + ")";
             }
             List<TYPE> list = new List<TYPE>();
-            string newSqlQuery = "Select " + _topX.ToString() + "* from " + _tableName;
+            string newSqlQuery = "Select " + _topX.ToString() + "* from [" + _tableName + "]";
             newSqlQuery = generateConditionals(newSqlQuery, conditions);
             try
             {
@@ -303,9 +352,47 @@ namespace FinalProject_340.Utilities
             return re.Count > 0 ? re[0] : default;
         }
         public List<TYPE> getList(Dictionary<string, string> conditions) { return getList(conditions, 10); }
+        public List<TYPE> getList(int top = 10) { return getList(new Dictionary<string, string>(), top); }
         private void setModel(PropertyInfo prop, TYPE newModel, SqlDataReader _reader)
         {
             _setModel[prop.PropertyType](prop, newModel, _typeDef);
+        }
+        public bool createTable()
+        {
+            string createTableQuery = $"create table [{_tableName}](Id int primary key identity not null, ";
+
+            foreach (PropertyInfo prop in _props)
+            {
+                createTableQuery += $"{prop.Name} {_CSHARP_TYPES_TO_SQL_TYPES[prop.PropertyType]}, ";
+            }
+            createTableQuery = createTableQuery.Substring(0, createTableQuery.Length - 2) + ")";
+            SqlCommand cmd = new SqlCommand(createTableQuery, _connection);
+            try
+            {
+                _connection.Open();
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex);
+            }
+            try
+            {
+                cmd.ExecuteNonQuery();
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex);
+                return false;
+            }
+            try
+            {
+                _connection.Close();
+            }
+            catch (Exception ex)
+            {
+                System.Console.WriteLine(ex);
+            }
+            return true;
         }
         private Vector2D<Type, object>? getValue(string Name, TYPE model)
         {
