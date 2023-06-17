@@ -73,15 +73,18 @@
             </tr>
         </tbody>
     </table>
-    <p>You have the option to choose your own background. Give it a shot!</p>
-    @*<div class="form-container">
+    <p style="padding-left: 20px">You have the option to choose your own background. Give it a shot!</p>
+    <div class="form-container" style="position: relative; display: inline-block; padding-left: 20px">
         <form asp-controller="api" asp-action="uploadBackground" enctype="multipart/form-data">
-            <input type="file" name="file" accept=".jpg" id="inputBackgroundImg" />
+        <label for="inputBackgroundImg" style="cursor:pointer;">
+            <input type="file" name="file" accept=".jpg" id="inputBackgroundImg" style="display: none"/>
+            <img src="~/images/picture.png" height="42" width="40" alt="Upload Image">
+        </label>
             <button type="submit">
                 <img src="~/images/upload.png" height="20" width="20" id="inputBackgroundImg" alt="Upload Image">
             </button>
         </form>
-    </div>*@
+    </div>
 <div id="backdropoverlay">
 </div>
 <div class="row player player_bg unselectable">
@@ -92,14 +95,14 @@
         <span id="play_pause_btn" onclick="toggle_control_btn()"></span>
         <span id="next_btn" onclick="nextTrack()"></span>
     </div>
-    <div id="form-container">
+    @*<div id="form-container">
         <form asp-controller="api" asp-action="uploadBackground" enctype="multipart/form-data">
-            <input type="file" name="file" accept=".jpg" id="inputBackgroundImg" />
+            <input type="file" name="file" accept=".jpg" id="inputBackgroundImg" style="display:none;"/>
             <button type="submit">
                 <img src="~/images/upload.png" height="20" width="20" id="inputBackgroundImg" alt="Upload Image">
             </button>
         </form>
-    </div>
+    </div>*@
     <div class="col">
         <div class="row">
             <div class="col" style="max-width: 80px;" >
