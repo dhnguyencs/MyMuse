@@ -61,8 +61,6 @@ namespace FinalProject_340.Utilities
                 // Copy the contents of the uploaded file to the FileStream
                 file.CopyTo(stream);
             }
-
-            // Return the file name
             return 0;
         }
     }

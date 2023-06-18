@@ -18,18 +18,25 @@ namespace FinalProject_340.Controllers
         public IActionResult uploadBackground(IFormFile file)
         {
             FileSys.SaveFile(file, "wwwroot/resources/" + Users_Service._user.UUID, "background.jpg");
-            return RedirectToAction("Index");
+            return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
-        public IActionResult uploadTrack([FromForm] _n_song song)
+        public IActionResult uploadTrack(_n_track track)
         {
-            song.setProps();
-            if (!song.isValid()) return Json(false);
-            return Json(song.saveTrack());
+            track.setProps();
+            if (track.isValid()) track.saveTrack();
+            return RedirectToAction("Index", "Home");
+        }
+        [RequestSizeLimit(500_000_000)]
+        [HttpPost]
+        public IActionResult uploadMultiples(new_list_tracks tracks)
+        {
+            tracks.saveFiles();
+            return RedirectToAction("Index", "Home");
         }
         [HttpPost] 
-        public IActionResult updateTrack([FromForm] Song update)
+        public IActionResult updateTrack([FromForm] song update)
         {   
             return Json(update.updateThis());
         }

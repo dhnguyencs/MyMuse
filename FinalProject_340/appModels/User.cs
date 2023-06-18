@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿
+using Microsoft.Data.SqlClient;
 using System.Net;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
@@ -27,7 +28,7 @@ namespace FinalProject_340.Models
 
         private Dictionary<string, string> _listSet = new Dictionary<string, string>();
 
-        SqlDBConnection<Song> sqlDB_tracks = new SqlDBConnection<Song>(Properties.Resource.appData);
+        SqlDBConnection<song> sqlDB_tracks = new SqlDBConnection<song>(Properties.Resource.appData);
 
         public Users() { }
         public Users(string EMAIL, string PASSWORD)
@@ -36,25 +37,25 @@ namespace FinalProject_340.Models
         }
         public Users(string _EMAIL, string FIRSTNAME, string LASTNAME, string _PASSWORD)
         {
-            FIRST_NAME  = FIRSTNAME;
-            LAST_NAME   = LASTNAME;
-            EMAIL       = _EMAIL;
-            UUID        = (_EMAIL + _PASSWORD).toHash();
+            FIRST_NAME = FIRSTNAME;
+            LAST_NAME = LASTNAME;
+            EMAIL = _EMAIL;
+            UUID = (_EMAIL + _PASSWORD).toHash();
         }
         public IDictionary<string, string> getList()
         {
             return _listSet;
         }
-        public bool AddSong(Song song)
+        public bool Addtrack(song track)
         {
-            return sqlDB_tracks.insertIntoTable(song);
+            return sqlDB_tracks.insertIntoTable(track);
         }
-        public bool updateTrack(Song song)
+        public bool updateTrack(song track)
         {
-            sqlDB_tracks.update(song, new Dictionary<string, string>()
+            sqlDB_tracks.update(track, new Dictionary<string, string>()
             {
                 {
-                    "SongHash", song.songHash
+                    "trackHash", track.songHash
                 },
                 {
                     "USR_UUID", UUID
@@ -62,26 +63,26 @@ namespace FinalProject_340.Models
             });
             return true;
         }
-        public List<Song> getAllTracks(int order)
+        public List<song> getAllTracks(int order)
         {
-            List<Song> songs = sqlDB_tracks.getList(new Dictionary<string, string>() {
+            List<song> tracks = sqlDB_tracks.getList(new Dictionary<string, string>() {
                 {
                     "USR_UUID", UUID
                 }
             }, 9999);
-            if (order == 1) songs.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
-            if (order == 2) songs.Sort((x, y) => x.songLength.CompareTo(y.songLength));
-            if (order == 3) songs.Sort((x, y) => x.artist.ToLower().CompareTo(y.artist.ToLower()));
-            if (order == 4) songs.Sort((x, y) => x.album.ToLower().CompareTo(y.album.ToLower()));
-            if (order == 5) songs.Sort((x, y) => x.plays.CompareTo(y.plays));
-            return songs;
+            if (order == 1) tracks.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
+            if (order == 2) tracks.Sort((x, y) => x.songLength.CompareTo(y.songLength));
+            if (order == 3) tracks.Sort((x, y) => x.artist.ToLower().CompareTo(y.artist.ToLower()));
+            if (order == 4) tracks.Sort((x, y) => x.album.ToLower().CompareTo(y.album.ToLower()));
+            if (order == 5) tracks.Sort((x, y) => x.plays.CompareTo(y.plays));
+            return tracks;
         }
-        public Song getTrack(string hash)
+        public song getTrack(string hash)
         {
             return sqlDB_tracks.getFirstOrDefault(new Dictionary<string, string>()
             {
                 {
-                    "songHash", hash
+                    "trackHash", hash
                 },
                 {
                     "USR_UUID", UUID
@@ -93,7 +94,7 @@ namespace FinalProject_340.Models
             return sqlDB_tracks.delete(new Dictionary<string, string>()
             {
                 {
-                    "songHash", hash
+                    "trackHash", hash
                 },
                 {
                     "USR_UUID", UUID
@@ -102,7 +103,8 @@ namespace FinalProject_340.Models
         }
         public HtmlString getBackGround()
         {
-            if(!File.Exists("wwwroot/resources/" + UUID + "/background.jpg")){
+            if (!File.Exists("wwwroot/resources/" + UUID + "/background.jpg"))
+            {
                 return new HtmlString("background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");\r\n        background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");");
             }
             return new HtmlString("background: url(" + "/resources/" + UUID + "/background.jpg);");

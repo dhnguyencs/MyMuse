@@ -3,10 +3,11 @@ using FinalProject_340.Utilities;
 using FinalProject_340.Models;
 using Microsoft.AspNetCore.Mvc;
 using System.IO;
+using Microsoft.IdentityModel.Tokens;
 
 namespace FinalProject_340.Models
 {
-    public class _n_song
+    public class _n_track
     {
         [FromForm(Name = "formFile")]
         public IFormFile formFile { get; set; }
@@ -15,13 +16,13 @@ namespace FinalProject_340.Models
         public IFormFile albumArt { get; set; }
 
         [FromForm(Name = "title")]
-        public string title { get; set; }
+        public string? title { get; set; }
 
         [FromForm(Name = "album")]
-        public string album { get; set; }
+        public string? album { get; set; }
 
         [FromForm(Name = "artist")]
-        public string artist { get; set; }
+        public string? artist { get; set; }
 
         public int duration { get; set; }
 
@@ -29,6 +30,7 @@ namespace FinalProject_340.Models
         private string FTYPE = "";
         public void setProps()
         {
+            if (this.formFile == null) return;
             using (Stream stream = formFile.OpenReadStream())
             {
                 TagLib.File tagFile = TagLib.File.Create(new GenericAudioStream(formFile.FileName, stream));
@@ -38,6 +40,9 @@ namespace FinalProject_340.Models
                 if (MiemeType.Contains("m4a")) FTYPE = ".m4a";
                 if (MiemeType.Contains("wav")) FTYPE = ".wav";
                 duration = (int)tagFile.Properties.Duration.TotalSeconds;
+                title = title.IsNullOrEmpty() ? tagFile.Tag.Title : title;
+                artist = artist.IsNullOrEmpty() ? tagFile.Tag.FirstArtist : artist;
+                album = album.IsNullOrEmpty() ? tagFile.Tag.Album : album;
             }
         }
 
@@ -49,7 +54,7 @@ namespace FinalProject_340.Models
                 !MiemeType.Contains("m4a") &&
                 !MiemeType.Contains("wav")
             ) return false;
-            if (string.IsNullOrEmpty(FTYPE)) return false;
+            if (FTYPE.IsNullOrEmpty() || title.IsNullOrEmpty()) return false;
             return true;
         }
 
@@ -57,11 +62,11 @@ namespace FinalProject_340.Models
         {
             string newHash = (formFile.GetHashCode().ToString() + Users_Service._user.UUID).toHash();
 
-            FileSys.SaveFileAsync(formFile, "wwwroot/resources/" + Users_Service._user.UUID + "/songs", newHash + FTYPE);
+            FileSys.SaveFileAsync(formFile, "wwwroot/resources/" + Users_Service._user.UUID + "/tracks", newHash + FTYPE);
 
             if (albumArt != null) FileSys.saveAlbumArt(albumArt, Users_Service._user.UUID, newHash);
-            return Users_Service._user.AddSong(
-                new Song()
+            return Users_Service._user.Addtrack(
+                new song()
                     {
                         USR_UUID    = Users_Service._user.UUID  ,
                         title       = title                     ,

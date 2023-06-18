@@ -1,0 +1,19 @@
+﻿
+@if ((int)ViewData["upload_as_list"] == 1)
+{
+    <input id="isMultiple" class="form-check-input" type="checkbox">
+}else{
+    <input id="isMultiple" class="form-check-input" type="checkbox" checked>
+}
+    <label class="form-check-label" for="flexCheckChecked">
+        Upload as list?
+    </label>
+<script>
+    document.getElementById("isMultiple").onchange = function(){
+        if (document.getElementById("isMultiple").checked == true){
+            window.location.href = "/index/0/2";
+        }else{
+            window.location.href = "/index/0/1";
+        }
+    }
+</script>
