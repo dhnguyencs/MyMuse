@@ -1,4 +1,5 @@
-﻿using Microsoft.Data.SqlClient;
+﻿
+using Microsoft.Data.SqlClient;
 using System.Net;
 using System.ComponentModel.DataAnnotations;
 using Microsoft.IdentityModel.Tokens;
@@ -36,10 +37,10 @@ namespace FinalProject_340.Models
         }
         public Users(string _EMAIL, string FIRSTNAME, string LASTNAME, string _PASSWORD)
         {
-            FIRST_NAME  = FIRSTNAME;
-            LAST_NAME   = LASTNAME;
-            EMAIL       = _EMAIL;
-            UUID        = (_EMAIL + _PASSWORD).toHash();
+            FIRST_NAME = FIRSTNAME;
+            LAST_NAME = LASTNAME;
+            EMAIL = _EMAIL;
+            UUID = (_EMAIL + _PASSWORD).toHash();
         }
         public IDictionary<string, string> getList()
         {
@@ -90,6 +91,7 @@ namespace FinalProject_340.Models
         }
         public bool deleteTrack(string hash)
         {
+            var test = typeof
             return sqlDB_tracks.delete(new Dictionary<string, string>()
             {
                 {
@@ -102,7 +104,8 @@ namespace FinalProject_340.Models
         }
         public HtmlString getBackGround()
         {
-            if(!File.Exists("wwwroot/resources/" + UUID + "/background.jpg")){
+            if (!File.Exists("wwwroot/resources/" + UUID + "/background.jpg"))
+            {
                 return new HtmlString("background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");\r\n        background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");");
             }
             return new HtmlString("background: url(" + "/resources/" + UUID + "/background.jpg);");

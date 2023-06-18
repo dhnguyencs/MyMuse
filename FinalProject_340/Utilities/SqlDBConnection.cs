@@ -5,29 +5,7 @@ namespace FinalProject_340.Utilities
 {
     public class SqlDBConnection<TYPE> where TYPE : new()
     {
-        public static bool createDatabase(string databaseName, string _connection_string)
-        {
-            using (SqlConnection connection = new SqlConnection(_connection_string))
-            {
-                string createDatabaseQuery = $"CREATE DATABASE {databaseName}";
-                connection.Open();
-                using (SqlCommand command = new SqlCommand(createDatabaseQuery, connection))
-                {
-                    try
-                    {
-                        command.ExecuteNonQuery();
-                    }
-                    catch
-                    {
-                        connection.Close();
-                        return false;
-                    }
-                    connection.Close();
-                    return true;
-                }
-            }
-        }
-        private class Vector2D<TYPE_A, TYPE_B>
+        private class _PAIR<TYPE_A, TYPE_B>
         {
             public TYPE_A? type { get; set; }
             public TYPE_B? typeB { get; set; }
@@ -54,6 +32,29 @@ namespace FinalProject_340.Utilities
 
         private static Dictionary<Type, __VOID__PROP_INFO__TYPE__Type>? _setModel;
         private static Dictionary<Type, String>?                        _CSHARP_TYPES_TO_SQL_TYPES;
+
+        public static bool createDatabase(string databaseName, string _connection_string)
+        {
+            using (SqlConnection connection = new SqlConnection(_connection_string))
+            {
+                string createDatabaseQuery = $"CREATE DATABASE {databaseName}";
+                connection.Open();
+                using (SqlCommand command = new SqlCommand(createDatabaseQuery, connection))
+                {
+                    try
+                    {
+                        command.ExecuteNonQuery();
+                    }
+                    catch
+                    {
+                        connection.Close();
+                        return false;
+                    }
+                    connection.Close();
+                    return true;
+                }
+            }
+        }
 
         public string getTableName() { return _tableName; }
 
@@ -156,7 +157,6 @@ namespace FinalProject_340.Utilities
             }
             newSqlQuery = newSqlQuery.Substring(0, newSqlQuery.Length - 2);
             newSqlQuery += " )";
-            Console.WriteLine(newSqlQuery);
             return newSqlQuery;
         }
         private SqlCommand createInsertSqlCommand(TYPE model)
@@ -305,23 +305,23 @@ namespace FinalProject_340.Utilities
             if (f) incompleteSqllQuery = incompleteSqllQuery.Substring(0, incompleteSqllQuery.Length - 4);
             return incompleteSqllQuery;
         }
-        public List<TYPE> getList(Dictionary<string, string> conditions, int topX)
+        public List<TYPE> getList(Dictionary<string, string> _conditions, int _max)
         {
-            string _topX = "";
-            if (topX != 0)
+            string __max = "";
+            if (_max != 0)
             {
-                _topX += "top (" + topX.ToString() + ")";
+                __max += "top (" + _max.ToString() + ")";
             }
             List<TYPE> list = new List<TYPE>();
-            string newSqlQuery = "Select " + _topX.ToString() + "* from [" + _tableName + "]";
-            newSqlQuery = generateConditionals(newSqlQuery, conditions);
+            string newSqlQuery = "Select " + __max.ToString() + "* from [" + _tableName + "]";
+            newSqlQuery = generateConditionals(newSqlQuery, _conditions);
             try
             {
                 _connection.Open();
                 SqlCommand newSqlCommand = new SqlCommand(newSqlQuery, _connection);
                 _reader = newSqlCommand.ExecuteReader();
 
-                for (int i = 0; _reader.Read() && i <= topX + 1; i++)
+                for (int i = 0; _reader.Read() && i <= _max + 1; i++)
                 {
                     TYPE newEntry = new TYPE();
                     foreach (PropertyInfo prop in _props)
@@ -394,13 +394,13 @@ namespace FinalProject_340.Utilities
             }
             return true;
         }
-        private Vector2D<Type, object>? getValue(string Name, TYPE model)
+        private _PAIR<Type, object>? getValue(string Name, TYPE model)
         {
             object? results = model?.GetType().GetProperty(Name)?.GetValue(model);
             if (results != null && !string.IsNullOrEmpty(results.ToString()))
             {
                 Type? typeOfVar = _typeDef.GetProperty(Name)?.GetValue(model)?.GetType();
-                return new Vector2D<Type, object> { type = typeOfVar, typeB = typeof(TYPE)?.GetProperty(Name)?.GetValue(model) };
+                return new _PAIR<Type, object> { type = typeOfVar, typeB = typeof(TYPE)?.GetProperty(Name)?.GetValue(model) };
             }
             return null;
         }

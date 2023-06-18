@@ -17,25 +17,31 @@ namespace FinalProject_340.Controllers
         {
             _logger = logger;
         }
-        [Route("/")]
-        [Route("/{Controller=Home}/{sort?}")]
-        [Route("/{Action=Index}/{sort?}")]
-        [Route("/{Controller=Home}/{Action=Index}/{sort?}")]
-        [Route("/{sort?}")]
-        public IActionResult Index(int sort = 0)
+
+        private int cookieTrigger(HttpRequest request, int sort, string cookieName)
         {
+            if (sort == 0 && !Request.Cookies[cookieName].IsNullOrEmpty())
+            {
+                int.TryParse(Request.Cookies[cookieName], out sort);
+                return sort;
+            }
             if (sort != 0)
             {
-                CookieServices.SetCookie("sort", sort.ToString(), 9999, Response);
-                ViewData["sort"] = sort;
-            }
-            if (sort == 0 && !Request.Cookies["sort"].IsNullOrEmpty())
-            {
-                int.TryParse(Request.Cookies["sort"], out sort);
-                ViewData["sort"] = sort;
-            }
-            else if(sort == 0) ViewData["sort"] = 1;
+                CookieServices.SetCookie(cookieName, sort.ToString(), 9999, Response);
+                return sort;
+            }        
+            return 0;
+        }
 
+        [Route("/")]
+        [Route("/{Controller=Home}/{Action=Index}/{sort?}/{uploadMultiple?}")]
+        [Route("/{Action=Index}")]
+        [Route("{Action=Index}/{sort?}")]
+        [Route("/{Action=Index}/{sort?}/{uploadMultiple?}")]
+        public IActionResult Index(int sort = 0, int uploadMultiple = 0)
+        {
+            ViewData["sort"] = cookieTrigger(Request, sort, "usr_pref_sort");
+            ViewData["upload_as_list"] = cookieTrigger(Request, uploadMultiple, "usr_pref_asList");
             return View(Users_Service._user);
         }
 
