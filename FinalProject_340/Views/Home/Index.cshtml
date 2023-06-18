@@ -21,35 +21,35 @@
             </tr>
         </thead>
         <tbody id="_trackTable">
-            @foreach (FinalProject_340.Models.song track in Model.getAllTracks((int)ViewData["sort"]))
+            @foreach (FinalProject_340.Models.Song song in Model.getAllTracks((int)ViewData["sort"]))
             {
-                <tr id="@track.songHash" class="hover" onclick='playTrack("@track.songHash", "@track.type")'>
+                <tr id="@song.songHash" class="hover" onclick='playTrack("@song.songHash", "@song.type")'>
                     <td colspan="1">
-                        @if (track.checkPath(100, 100))
+                        @if (song.checkPath(100, 100))
                         {
-                            <img height="30" width="30" src='@("/resources/" + @Model.UUID + "/art/" + @track.songHash + "100x100.jpg")' />
+                            <img height="30" width="30" src='@("/resources/" + @Model.UUID + "/art/" + @song.songHash + "100x100.jpg")' />
                         }
                         else
                         {
                             <img height="0" width="0" src='' />
                         }
                     </td>
-                    <td colspan="10">@track.title</td>
-                    <td colspan="1">@track.formatTime()</td>
-                    <td colspan="2">@track.artist</td>
-                    <td colspan="2">@track.album</td>
-                    <td colspan="1">@track.plays</td>
+                    <td colspan="10">@song.title</td>
+                    <td colspan="1">@song.formatTime()</td>
+                    <td colspan="2">@song.artist</td>
+                    <td colspan="2">@song.album</td>
+                    <td colspan="1">@song.plays</td>
                     <td>
-                        <img src="~/images/edit.png" height="20" width="20" onclick="updateTrack('@track.songHash')" />
-                        <img src="~/images/delete_btn.png" height="20" width="20" onclick="deleteTrack('@track.songHash')" />
+                        <img src="~/images/edit.png" height="20" width="20" onclick="updateTrack('@song.songHash')" />
+                        <img src="~/images/delete_btn.png" height="20" width="20" onclick="deleteTrack('@song.songHash')" />
                     </td>
                 </tr>
             }
             <tr>
             @{
                 if ((int)ViewData["upload_as_list"] == 1){
-                    _n_track newtrack = new _n_track();
-                        <partial name="__uploadTrack" model="newtrack" view-data="ViewData"></partial>
+                    _n_song newSong = new _n_song();
+                        <partial name="__uploadTrack" model="newSong" view-data="ViewData"></partial>
                 }else{
                     new_list_tracks packet = new new_list_tracks();
                     <partial name="__uploadListOfTracks" model="packet" view-data="ViewData"></partial>
@@ -286,20 +286,20 @@
             reader.readAsArrayBuffer(this.files[0])
         }
     }
-    function playTrack(trackHash, audio){
-        if(!currentTrack.id || trackHash !== currentTrack.id){
+    function playTrack(songHash, audio){
+        if(!currentTrack.id || songHash !== currentTrack.id){
             if (currentTrack.id) {
                 var element_2 = document.getElementById(currentTrack.id);
                 element_2.style.removeProperty("background");
                 element_2.style.removeProperty("color")
             }
 
-            currentTrack.src = "/resources/@Model.UUID/tracks/" + trackHash + audio;
-            currentTrack.id = trackHash;
+            currentTrack.src = "/resources/@Model.UUID/songs/" + songHash + audio;
+            currentTrack.id = songHash;
 
-            updatePlays(trackHash);
+            updatePlays(songHash);
 
-            var element = document.getElementById(trackHash);
+            var element = document.getElementById(songHash);
             element.style.setProperty("background", "rgba(0, 0, 0, .3)");
             element.style.setProperty("color", "rgba(255, 255, 255, 1)");
             var cells   = element.cells;
@@ -308,7 +308,7 @@
             let album   = cells[4].innerText;
 
             currentlyPlaying_text.innerText = title + " \n " + artist + "\n" + album;
-            currentlyPlayingArt.src = `/resources/@Model.UUID/art/${trackHash}500x500.jpg`;
+            currentlyPlayingArt.src = `/resources/@Model.UUID/art/${songHash}500x500.jpg`;
             resumeTrack();
             document.getElementById("play_pause_btn").style.setProperty("background-position-x", `0px`);
         }else{
@@ -399,7 +399,7 @@
             formData.append("title", newTitle);
             formData.append("artist", newArtist);
             formData.append("album", newAlbum);
-            formData.append("trackHash", hash);
+            formData.append("songHash", hash);
 
             let xhReq = new XMLHttpRequest();
             xhReq.onreadystatechange = function(){
@@ -425,7 +425,7 @@
     function updatePlays(hash){
         let formData = new FormData();
         formData.append("plays", 921873);
-        formData.append("trackHash", hash);
+        formData.append("songHash", hash);
         let xhReq = new XMLHttpRequest();
         xhReq.onreadystatechange = function () {
             if (xhReq.readyState == 4 && xhReq.status == 200) {

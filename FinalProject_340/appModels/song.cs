@@ -5,7 +5,7 @@ using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace FinalProject_340.Models
 {
-    public class song
+    public class Song
     {
         [FromForm(Name = "title")]
         public string title { get; set; }
@@ -15,7 +15,7 @@ namespace FinalProject_340.Models
         public string album { get; set; }
         [FromForm(Name = "albumArt")]
         public string albumArt { get; set; }
-        [FromForm(Name = "trackHash")]
+        [FromForm(Name = "songHash")]
         public string songHash { get; set; }
         public string USR_UUID { get; set; }
         public string type { get; set; }
@@ -46,21 +46,21 @@ namespace FinalProject_340.Models
         public bool updateThis()
         {
             //retrieve the track to be updated from the database
-            song track = Users_Service._user.getTrack(songHash);
+            Song song = Users_Service._user.getTrack(songHash);
 
             if (plays == 921873)
             {
-                track.plays++;
-                return Users_Service._user.updateTrack(track);
+                song.plays++;
+                return Users_Service._user.updateTrack(song);
             }
 
             //update operations
-            track.title = title;
-            track.artist = artist;
-            track.album = album;
+            song.title = title;
+            song.artist = artist;
+            song.album = album;
 
             //return the results of pushing the update to the database
-            return Users_Service._user.updateTrack(track);
+            return Users_Service._user.updateTrack(song);
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace FinalProject_340.Models
 {
-    public class _n_track
+    public class _n_song
     {
         [FromForm(Name = "formFile")]
         public IFormFile formFile { get; set; }
@@ -62,11 +62,11 @@ namespace FinalProject_340.Models
         {
             string newHash = (formFile.GetHashCode().ToString() + Users_Service._user.UUID).toHash();
 
-            FileSys.SaveFileAsync(formFile, "wwwroot/resources/" + Users_Service._user.UUID + "/tracks", newHash + FTYPE);
+            FileSys.SaveFileAsync(formFile, "wwwroot/resources/" + Users_Service._user.UUID + "/songs", newHash + FTYPE);
 
             if (albumArt != null) FileSys.saveAlbumArt(albumArt, Users_Service._user.UUID, newHash);
-            return Users_Service._user.Addtrack(
-                new song()
+            return Users_Service._user.AddSong(
+                new Song()
                     {
                         USR_UUID    = Users_Service._user.UUID  ,
                         title       = title                     ,

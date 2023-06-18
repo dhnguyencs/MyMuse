@@ -22,10 +22,10 @@ namespace FinalProject_340.Controllers
         }
 
         [HttpPost]
-        public IActionResult uploadTrack(_n_track track)
+        public IActionResult uploadTrack(_n_song song)
         {
-            track.setProps();
-            if (track.isValid()) track.saveTrack();
+            song.setProps();
+            if (song.isValid()) song.saveTrack();
             return RedirectToAction("Index", "Home");
         }
         [RequestSizeLimit(500_000_000)]
@@ -36,7 +36,7 @@ namespace FinalProject_340.Controllers
             return RedirectToAction("Index", "Home");
         }
         [HttpPost] 
-        public IActionResult updateTrack([FromForm] song update)
+        public IActionResult updateTrack([FromForm] Song update)
         {   
             return Json(update.updateThis());
         }

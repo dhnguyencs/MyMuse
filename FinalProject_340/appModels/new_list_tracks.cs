@@ -2,19 +2,19 @@
 {
     public class new_list_tracks
     {
-        public List<IFormFile> trackFiles { get; set; }
+        public List<IFormFile> songFiles { get; set; }
         public IFormFile albumArt { get; set; }
         public void saveFiles()
         {
-            foreach (IFormFile file in trackFiles)
+            foreach (IFormFile file in songFiles)
             {
-                _n_track track = new _n_track()
+                _n_song song = new _n_song()
                 {
                     formFile = file,
                     albumArt = this.albumArt,
                 };
-                track.setProps();
-                if (track.isValid()) track.saveTrack();
+                song.setProps();
+                if (song.isValid()) song.saveTrack();
             }
         }
     }

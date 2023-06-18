@@ -28,7 +28,7 @@ namespace FinalProject_340.Models
 
         private Dictionary<string, string> _listSet = new Dictionary<string, string>();
 
-        SqlDBConnection<song> sqlDB_tracks = new SqlDBConnection<song>(Properties.Resource.appData);
+        SqlDBConnection<Song> sqlDB_tracks = new SqlDBConnection<Song>(Properties.Resource.appData);
 
         public Users() { }
         public Users(string EMAIL, string PASSWORD)
@@ -46,16 +46,16 @@ namespace FinalProject_340.Models
         {
             return _listSet;
         }
-        public bool Addtrack(song track)
+        public bool AddSong(Song song)
         {
-            return sqlDB_tracks.insertIntoTable(track);
+            return sqlDB_tracks.insertIntoTable(song);
         }
-        public bool updateTrack(song track)
+        public bool updateTrack(Song song)
         {
-            sqlDB_tracks.update(track, new Dictionary<string, string>()
+            sqlDB_tracks.update(song, new Dictionary<string, string>()
             {
                 {
-                    "trackHash", track.songHash
+                    "SongHash", song.songHash
                 },
                 {
                     "USR_UUID", UUID
@@ -63,26 +63,26 @@ namespace FinalProject_340.Models
             });
             return true;
         }
-        public List<song> getAllTracks(int order)
+        public List<Song> getAllTracks(int order)
         {
-            List<song> tracks = sqlDB_tracks.getList(new Dictionary<string, string>() {
+            List<Song> songs = sqlDB_tracks.getList(new Dictionary<string, string>() {
                 {
                     "USR_UUID", UUID
                 }
             }, 9999);
-            if (order == 1) tracks.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
-            if (order == 2) tracks.Sort((x, y) => x.songLength.CompareTo(y.songLength));
-            if (order == 3) tracks.Sort((x, y) => x.artist.ToLower().CompareTo(y.artist.ToLower()));
-            if (order == 4) tracks.Sort((x, y) => x.album.ToLower().CompareTo(y.album.ToLower()));
-            if (order == 5) tracks.Sort((x, y) => x.plays.CompareTo(y.plays));
-            return tracks;
+            if (order == 1) songs.Sort((x, y) => x.title.ToLower().CompareTo(y.title.ToLower()));
+            if (order == 2) songs.Sort((x, y) => x.songLength.CompareTo(y.songLength));
+            if (order == 3) songs.Sort((x, y) => x.artist.ToLower().CompareTo(y.artist.ToLower()));
+            if (order == 4) songs.Sort((x, y) => x.album.ToLower().CompareTo(y.album.ToLower()));
+            if (order == 5) songs.Sort((x, y) => x.plays.CompareTo(y.plays));
+            return songs;
         }
-        public song getTrack(string hash)
+        public Song getTrack(string hash)
         {
             return sqlDB_tracks.getFirstOrDefault(new Dictionary<string, string>()
             {
                 {
-                    "trackHash", hash
+                    "songHash", hash
                 },
                 {
                     "USR_UUID", UUID
@@ -91,10 +91,11 @@ namespace FinalProject_340.Models
         }
         public bool deleteTrack(string hash)
         {
+            var test = typeof
             return sqlDB_tracks.delete(new Dictionary<string, string>()
             {
                 {
-                    "trackHash", hash
+                    "songHash", hash
                 },
                 {
                     "USR_UUID", UUID
