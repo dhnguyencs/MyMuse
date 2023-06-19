@@ -91,7 +91,6 @@ namespace FinalProject_340.Models
         }
         public bool deleteTrack(string hash)
         {
-            var test = typeof
             return sqlDB_tracks.delete(new Dictionary<string, string>()
             {
                 {
