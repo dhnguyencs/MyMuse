@@ -103,11 +103,17 @@ namespace FinalProject_340.Models
         }
         public HtmlString getBackGround()
         {
-            if (!File.Exists("wwwroot/resources/" + UUID + "/background.jpg"))
+            var backgroundFilePath = "wwwroot/resources/" + UUID + "/background.jpg";
+            if (File.Exists(backgroundFilePath))
             {
-                return new HtmlString("background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");\r\n        background: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"../images/hd-wallpaper-3833973_640.jpg\");");
+                var backgroundImageUrl = "/resources/" + UUID + "/background.jpg";
+                return new HtmlString("background: url(" + backgroundImageUrl + ");");
             }
-            return new HtmlString("background: url(" + "/resources/" + UUID + "/background.jpg);");
+            else
+            {
+                var defaultBackgroundImageUrl = "../images/hd-wallpaper-3833973_640.jpg";
+                return new HtmlString("background: -webkit-linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"" + defaultBackgroundImageUrl + "\");\r\nbackground: linear-gradient(rgba(144, 238, 144, 1), rgba(60, 100, 60, 0.8)), url(\"" + defaultBackgroundImageUrl + "\");");
+            }
         }
     }
 }

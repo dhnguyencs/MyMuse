@@ -55,6 +55,9 @@ namespace FinalProject_340.Utilities
             // Combine the folder path and the file name to get the full file path
             var filePath = Path.Combine(folderPath, fileName);
 
+            // Log a message to indicate that the SaveFile method is called and provide the file path
+            Console.WriteLine("SaveFile method called. Saving file to: " + filePath);
+
             // Open a FileStream object to write the file to disk
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
