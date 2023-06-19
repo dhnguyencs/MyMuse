@@ -396,3 +396,6 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
+
+#resource folder generated
+FinalProject_340\wwwroot\resources\
