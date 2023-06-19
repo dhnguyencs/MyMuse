@@ -9,5 +9,8 @@
 	c7 float,
 	c8 char,
 	c9 varchar(128),
-	c10 datetime
+	c10 datetime,
+	c11 BIT,
+	c12 BINARY(50),
+
 )

@@ -3,6 +3,9 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/main/VisualStudio.gitignore
 
+#resource folder generated
+FinalProject_340\wwwroot\resources\
+
 # User-specific files
 *.rsuser
 *.suo
@@ -396,6 +399,3 @@ FodyWeavers.xsd
 
 # JetBrains Rider
 *.sln.iml
-
-#resource folder generated
-FinalProject_340\wwwroot\resources\
