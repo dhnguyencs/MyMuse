@@ -18,17 +18,17 @@ namespace FinalProject_340.Controllers
             _logger = logger;
         }
 
-        private int cookieTrigger(HttpRequest request, int sort, string cookieName)
+        private int cookieTrigger(HttpRequest request, int newVal, string cookieName)
         {
-            if (sort == 0 && !Request.Cookies[cookieName].IsNullOrEmpty())
+            if (newVal == 0 && !Request.Cookies[cookieName].IsNullOrEmpty())
             {
-                int.TryParse(Request.Cookies[cookieName], out sort);
-                return sort;
+                int.TryParse(Request.Cookies[cookieName], out newVal);
+                return newVal;
             }
-            if (sort != 0)
+            if (newVal != 0)
             {
-                CookieServices.SetCookie(cookieName, sort.ToString(), 9999, Response);
-                return sort;
+                CookieServices.SetCookie(cookieName, newVal.ToString(), 9999, Response);
+                return newVal;
             }        
             return 0;
         }

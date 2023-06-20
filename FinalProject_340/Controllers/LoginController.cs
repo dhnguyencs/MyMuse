@@ -69,5 +69,11 @@ namespace FinalProject_340.Controllers
                 PASSWORD = newUser.PASSWORD
             });
         }
+        [HttpGet]
+        public IActionResult logOut()
+        {
+            SessionTokens.deleteToken(Request.Cookies["sessionID"]);
+            return RedirectToAction("Index", "Home");
+        }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using FinalProject_340.Utilities;
 using FinalProject_340.Models;
+using System.Transactions;
 
 namespace FinalProject_340.Models
 {
@@ -14,6 +15,14 @@ namespace FinalProject_340.Models
                 {"SessionID", cookie }
             });
             return newToken;
+        }
+        public static bool deleteToken(string cookie)
+        {
+            SqlDBConnection<SessionTokens> newConnection = new SqlDBConnection<SessionTokens>(Properties.Resource.appData);
+            return newConnection.delete(new Dictionary<string, string>()
+            {
+                {"SessionID", cookie }
+            });
         }
 
         public string? SessionID { get; set; }
