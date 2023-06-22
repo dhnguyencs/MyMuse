@@ -13,5 +13,9 @@ namespace FinalProject_340.Models
 
             httpRes.Cookies.Append(key, value, option);
         }
+        public static void DeleteCookie(HttpResponse res, string cookieName)
+        {
+            res.Cookies.Delete(cookieName);
+        }
     }
 }

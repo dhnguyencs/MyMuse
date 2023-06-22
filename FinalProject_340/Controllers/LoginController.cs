@@ -72,7 +72,7 @@ namespace FinalProject_340.Controllers
         [HttpGet]
         public IActionResult logOut()
         {
-            SessionTokens.deleteToken(Request.Cookies["sessionID"]);
+            Users_Service.logout(Request.Cookies["SessionID"]);
             return RedirectToAction("Index", "Home");
         }
     }

@@ -5,5 +5,4 @@
 	FIRST_NAME		varchar(30)											not null,
 	LAST_NAME		varchar(30)											not null,
 	EMAIL			varchar(128)		unique							not null, 
-    [USER_BACKGROUND] IMAGE NULL,
 )

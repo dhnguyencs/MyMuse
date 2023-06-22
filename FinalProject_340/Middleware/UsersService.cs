@@ -23,6 +23,10 @@ namespace FinalProject_340.Middleware
             //return either the user or null user
             return user != null ? user : (Users?)null;
         }
+        public static bool logout(string cookie)
+        {
+            return SessionTokens.deleteToken(cookie, _user.UUID); 
+        }
         private readonly RequestDelegate _next;
         public Users_Service(RequestDelegate next)
         {
